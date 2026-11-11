@@ -1,0 +1,74 @@
+name: Fix my app
+description: Tell me what broke. You pay $39 only if the fix works.
+title: "[Fix] "
+labels: ["fix-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This page is public. Don't paste passwords, API secret keys or your database service key.
+  - type: textarea
+    id: broken
+    attributes:
+      label: What's broken?
+      description: What you did, what happened, and any error message you saw.
+      placeholder: "When I log in on the live site it sends me to localhost:3000."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen instead?
+    validations:
+      required: true
+  - type: input
+    id: repo
+    attributes:
+      label: Link to your repo
+      description: Must be public for now. See the README if yours is private.
+      placeholder: "https://github.com/you/your-app"
+    validations:
+      required: true
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Built with
+      options:
+        - Lovable
+        - Bolt
+        - v0
+        - Cursor
+        - Replit
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: host
+    attributes:
+      label: Where is it live?
+      options:
+        - Lovable hosting
+        - Bolt hosting
+        - Vercel
+        - Netlify
+        - Other
+        - Not live yet
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Live link (if any)
+  - type: textarea
+    id: tried
+    attributes:
+      label: Anything you've already tried
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Before you send
+      options:
+        - label: I haven't pasted any passwords or secret keys here.
+          required: true
+        - label: I understand an AI writes the fix and I pay $39 only if it works.
+          required: true
