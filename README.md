@@ -10,7 +10,16 @@ Built with Lovable, Bolt, v0 or Cursor, and it broke once it went live? Login th
 2. Within 48 hours I reply on the issue with the fix: what was wrong in plain English, the exact changes, and a prompt you can paste into Lovable or Bolt to apply it yourself.
 3. You test it. If it works, I send a $39 payment link. If it doesn't, you pay nothing.
 
-The first five fixes are free if you let me quote what you say about it.
+The first two fixes are free if you let me quote what you say about it.
+
+## Free fix notes
+
+Before you open an issue, check whether one of these already answers it. They are free, and
+they are the same working I would send you.
+
+- [Logging in on your live app sends you to localhost:3000](FIXES/login-sends-users-to-localhost-after-deploy.md)
+- [Your Lovable app 404s on refresh, or goes blank, on Vercel, Netlify or Cloudflare](FIXES/lovable-app-404-on-refresh-after-deploy.md)
+- [Leaving Lovable Cloud without losing your users](FIXES/leaving-lovable-cloud-without-losing-users.md)
 
 ## Getting your code to me
 
