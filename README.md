@@ -20,6 +20,7 @@ they are the same working I would send you.
 - [Logging in on your live app sends you to localhost:3000](FIXES/login-sends-users-to-localhost-after-deploy.md)
 - [Your Lovable app 404s on refresh, or goes blank, on Vercel, Netlify or Cloudflare](FIXES/lovable-app-404-on-refresh-after-deploy.md)
 - [Leaving Lovable Cloud without losing your users](FIXES/leaving-lovable-cloud-without-losing-users.md)
+- [Blank white page after deploy, and the console says "supabaseUrl is required"](FIXES/blank-page-after-deploy-supabaseurl-is-required.md)
 
 ## Getting your code to me
 
