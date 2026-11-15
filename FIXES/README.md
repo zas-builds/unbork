@@ -1,6 +1,6 @@
 # Free fix notes
 
-Five things that break vibe-coded apps once they go live, and what each one actually is.
+Six things that break vibe-coded apps once they go live, and what each one actually is.
 These are free. They are the same working I would send you if you paid.
 
 Each note says where its facts came from and what I have not been able to test. If none of
@@ -32,6 +32,12 @@ fix for ones built since May 2026, where it can make things worse.
 Saving fails with error `42501`, or worse, nothing errors and your list just comes back empty
 while edits silently change nothing. One message, three unrelated causes, and this note shows
 how to tell which one you have in about a minute.
+
+**["infinite recursion detected in policy for relation", and the `stack depth limit exceeded` it hides behind](infinite-recursion-detected-in-policy-for-relation.md)**
+You added sharing, teams or an admin role, and now every read of that table fails with code
+`42P17`. Two policies are asking each other a question neither can finish. The error names the
+wrong table, it will not reproduce in the SQL Editor, and the obvious fix turns it into a
+stranger error instead.
 
 ## Moving off Lovable Cloud
 

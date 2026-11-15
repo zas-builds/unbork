@@ -22,6 +22,7 @@ they are the same working I would send you.
 - [Leaving Lovable Cloud without losing your users](FIXES/leaving-lovable-cloud-without-losing-users.md)
 - [Blank white page after deploy, and the console says "supabaseUrl is required"](FIXES/blank-page-after-deploy-supabaseurl-is-required.md)
 - ["new row violates row-level security policy" when your app saves data](FIXES/new-row-violates-row-level-security-policy.md)
+- ["infinite recursion detected in policy for relation", and the `stack depth limit exceeded` it hides behind](FIXES/infinite-recursion-detected-in-policy-for-relation.md)
 
 ## Getting your code to me
 
