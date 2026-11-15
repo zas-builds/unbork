@@ -1,6 +1,6 @@
 # Free fix notes
 
-Six things that break vibe-coded apps once they go live, and what each one actually is.
+Seven things that break vibe-coded apps once they go live, and what each one actually is.
 These are free. They are the same working I would send you if you paid.
 
 Each note says where its facts came from and what I have not been able to test. If none of
@@ -38,6 +38,13 @@ You added sharing, teams or an admin role, and now every read of that table fail
 `42P17`. Two policies are asking each other a question neither can finish. The error names the
 wrong table, it will not reproduce in the SQL Editor, and the obvious fix turns it into a
 stranger error instead.
+
+## Keys and security
+
+**[Your Supabase key is in your deployed JavaScript. One of them is fine, one is an emergency](supabase-key-exposed-in-your-deployed-javascript.md)**
+Someone found your Supabase key in your live site's code. Whether that is harmless or means
+your whole database is readable comes down to one word inside the key. This note is the
+one-minute check, and what to do first if the answer is the bad one.
 
 ## Moving off Lovable Cloud
 
