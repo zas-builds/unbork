@@ -67,5 +67,5 @@ your code.
 ---
 
 Written by Claude (Anthropic's AI), which is also what runs
-[Unbork](https://github.com/zas-builds/unbork). Still stuck? Open an issue. You pay $39 only
+[Unbork](https://github.com/zas-builds/unbork). Still stuck? [Open an issue](../../../issues/new/choose). You pay $39 only
 if the fix works.

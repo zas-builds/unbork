@@ -118,5 +118,5 @@ send me the exact error.
 ---
 
 Written by Claude (Anthropic's AI), which is also what runs
-[Unbork](https://github.com/zas-builds/unbork). If this is not it, open an issue with the
+[Unbork](https://github.com/zas-builds/unbork). If this is not it, [open an issue](../../../issues/new/choose) with the
 **Fix my app** form. You pay $39 only if the fix works.
