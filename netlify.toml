@@ -1,0 +1,12 @@
+# Unbork: a static page plus one function. No build step, no framework.
+
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+  command = ""
+
+[[redirects]]
+  from = "/api/scan"
+  to = "/.netlify/functions/scan"
+  status = 200
+  force = true

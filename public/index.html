@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unbork</title>
+<meta name="description" content="Paste your live site's address and get a plain-English check for problems anyone outside can see. Free, no sign-up.">
+<style>
+  :root {
+    --ink: #1b1b1b; --soft: #5c5c5c; --line: #e3e3e0; --bg: #faf9f7; --card: #ffffff;
+    --red: #b3261e; --amber: #8a5a00; --green: #1e6b3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 0 16px;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 0 72px; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 10px; letter-spacing: -0.02em; }
+  .lede { font-size: 19px; color: var(--soft); margin: 0 0 28px; }
+  form { display: flex; gap: 10px; flex-wrap: wrap; }
+  input[type=url] {
+    flex: 1 1 260px; min-width: 0; padding: 14px 16px; font-size: 17px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink);
+  }
+  input[type=url]:focus { outline: 2px solid #3b6ea5; outline-offset: 1px; }
+  button {
+    padding: 14px 22px; font-size: 17px; font-weight: 600; cursor: pointer;
+    border: 0; border-radius: 10px; background: var(--ink); color: #fff;
+  }
+  button[disabled] { opacity: .55; cursor: progress; }
+  .hint { font-size: 15px; color: var(--soft); margin: 10px 0 0; }
+  #out { margin-top: 32px; }
+  .verdict { font-size: 21px; font-weight: 650; margin: 0 0 6px; display: flex; gap: 10px; align-items: center; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
+  .red .dot { background: var(--red); } .amber .dot { background: var(--amber); } .green .dot { background: var(--green); }
+  .verdict.red { color: var(--red); } .verdict.amber { color: var(--amber); } .verdict.green { color: var(--green); }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--line);
+    border-radius: 10px; padding: 16px 18px; margin: 14px 0;
+  }
+  .card.red { border-left-color: var(--red); } .card.amber { border-left-color: var(--amber); }
+  .card h3 { margin: 0 0 6px; font-size: 18px; color: var(--ink); }
+  .card p { margin: 0 0 8px; }
+  .where { font-size: 14px; color: var(--soft); word-break: break-all; margin: 0; }
+  ul.safe { padding-left: 20px; color: var(--soft); font-size: 16px; }
+  .err { color: var(--red); }
+  footer { margin-top: 56px; font-size: 15px; color: var(--soft); border-top: 1px solid var(--line); padding-top: 18px; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #f2f0ed; --soft: #a8a5a0; --line: #343431; --bg: #121211; --card: #1b1b19;
+            --red: #ff8a80; --amber: #e0b457; --green: #7fd39b; }
+    button { background: #f2f0ed; color: #121211; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Is your app leaking?</h1>
+  <p class="lede">Paste the address of your live site. You get a plain-English report on problems a stranger could find from outside, with no login and no sign-up.</p>
+
+  <form id="f">
+    <label for="url" class="sr" hidden>Your site address</label>
+    <input id="url" type="url" inputmode="url" autocomplete="url" placeholder="myapp.lovable.app" required>
+    <button id="go" type="submit">Check my site</button>
+  </form>
+  <p class="hint">It takes a few seconds. Nothing is stored and we never show your keys back to you.</p>
+
+  <div id="out" aria-live="polite"></div>
+
+  <footer>
+    <p>Today Unbork checks one thing: keys in your site&rsquo;s code that let a stranger act as you. More checks are being added, and each one goes live only once it is tested.</p>
+    <p>Built and run by Claude, an AI. <a href="https://github.com/zas-builds/unbork">Code on GitHub</a>.</p>
+  </footer>
+</main>
+<script type="module">
+const f = document.getElementById('f');
+const out = document.getElementById('out');
+const go = document.getElementById('go');
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+const WORDS = {
+  red: 'Something needs fixing now',
+  amber: 'Worth tidying up',
+  green: 'Nothing found that a stranger could use',
+};
+
+async function ask(url) {
+  for (const path of ['/api/scan', '/.netlify/functions/scan']) {
+    const res = await fetch(path + '?url=' + encodeURIComponent(url), { headers: { accept: 'application/json' } });
+    if (res.status === 404) continue;
+    return res.json();
+  }
+  throw new Error('checker-unavailable');
+}
+
+f.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const url = document.getElementById('url').value.trim();
+  if (!url) return;
+  go.disabled = true;
+  out.innerHTML = '<p>Checking your site&hellip;</p>';
+  try {
+    const r = await ask(url);
+    if (!r.ok) {
+      out.innerHTML = '<p class="err">' + esc(r.error || 'We could not check that address.') + '</p>';
+      return;
+    }
+    const parts = ['<p class="verdict ' + r.verdict + '"><span class="dot"></span>' + WORDS[r.verdict] + '</p>'];
+    parts.push('<p class="where">Checked ' + esc(r.finalUrl) + '</p>');
+    for (const i of r.items) {
+      parts.push('<div class="card ' + esc(i.level) + '"><h3>' + esc(i.headline) + '</h3><p>' + esc(i.plain) + '</p>'
+        + '<p class="where">Found in: ' + i.where.map(esc).join('<br>') + '</p></div>');
+    }
+    if (r.safe.length) {
+      parts.push('<ul class="safe">' + r.safe.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ul>');
+    }
+    if (r.notes.length) {
+      parts.push('<ul class="safe">' + r.notes.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ul>');
+    }
+    out.innerHTML = parts.join('');
+  } catch {
+    out.innerHTML = '<p class="err">The checker is not answering right now. Please try again in a minute.</p>';
+  } finally {
+    go.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "unbork",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Unbork: a plain-English checker for live sites built with Lovable, Bolt or Cursor.",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": { "node": ">=20" }
+}
