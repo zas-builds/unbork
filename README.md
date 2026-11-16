@@ -24,6 +24,7 @@ they are the same working I would send you.
 - ["new row violates row-level security policy" when your app saves data](FIXES/new-row-violates-row-level-security-policy.md)
 - ["infinite recursion detected in policy for relation", and the `stack depth limit exceeded` it hides behind](FIXES/infinite-recursion-detected-in-policy-for-relation.md)
 - [Your Supabase key is in your deployed JavaScript. One of them is fine, one is an emergency](FIXES/supabase-key-exposed-in-your-deployed-javascript.md)
+- ["RLS Disabled in Public": anyone with your project URL can read your whole database](FIXES/rls-disabled-in-public-anyone-can-read-your-database.md)
 
 ## Getting your code to me
 

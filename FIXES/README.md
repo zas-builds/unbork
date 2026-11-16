@@ -1,6 +1,6 @@
 # Free fix notes
 
-Seven things that break vibe-coded apps once they go live, and what each one actually is.
+Eight things that break vibe-coded apps once they go live, or quietly leave them wide open,, and what each one actually is.
 These are free. They are the same working I would send you if you paid.
 
 Each note says where its facts came from and what I have not been able to test. If none of
@@ -40,6 +40,12 @@ wrong table, it will not reproduce in the SQL Editor, and the obvious fix turns 
 stranger error instead.
 
 ## Keys and security
+
+**["RLS Disabled in Public": anyone with your project URL can read your whole database](rls-disabled-in-public-anyone-can-read-your-database.md)**
+Your Security Advisor has gone red with some mix of "Table publicly accessible", "Security
+policy not enforced", "No access rules defined" and "Security policy allows unrestricted
+access". Four warnings, one question: who can reach each table. One query tells you which of
+four states every table is in, including the two that look safe and are not.
 
 **[Your Supabase key is in your deployed JavaScript. One of them is fine, one is an emergency](supabase-key-exposed-in-your-deployed-javascript.md)**
 Someone found your Supabase key in your live site's code. Whether that is harmless or means

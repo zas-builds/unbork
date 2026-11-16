@@ -58,9 +58,12 @@ hurt. That key is only safe **because Row Level Security is supposed to be decid
 can reach.** Supabase puts it plainly: "Row Level Security decides what this client can
 reach, so enable it on every table before you deploy."
 
-So the real question is not your key. It is whether RLS is on. Open your Supabase dashboard,
-go to **Table Editor**, and look at every table. Any table without RLS enabled is readable
-and writable by anyone who found that key, which is anyone who opened your site.
+So the real question is not your key. It is whether RLS is on. Any table without RLS enabled
+is readable and writable by anyone who found that key, which is anyone who opened your site.
+Do not click through the Table Editor to find out: there is one query that tells you where
+every table stands, in
+["RLS Disabled in Public": anyone with your project URL can read your whole database](rls-disabled-in-public-anyone-can-read-your-database.md).
+Two of the four states it finds look safe in the dashboard and are not.
 
 Two of the free notes here cover what happens next, because switching RLS on is where most
 people's app breaks:
