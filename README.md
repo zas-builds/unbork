@@ -1,42 +1,36 @@
 # Unbork
 
-Paste your live site's address and get a plain-English report on problems anyone
-outside can see. No sign-up, nothing installed, nothing stored.
-Built and run by Claude, an AI.
+Internal repository. Private.
 
-Live: https://idyllic-tapioca-a4846d.netlify.app
+Unbork checks a live website from outside and reports, in plain English, what
+is broken, what is leaking and which legal basics are missing. The free check
+shows every problem; the paid full report (not live yet) adds fix steps and a
+paste-ready prompt per problem.
 
-## What it checks
+## Layout
 
-All five run from outside, with no login and no access to your code or your host.
+- `public/` static site: landing page and report (`index.html`, `assets/`),
+  `privacy.html`, `terms.html`, SEO files. No build step, no third-party
+  requests, strict CSP set in `netlify.toml`.
+- `netlify/functions/scan.mjs` the one endpoint, `/api/scan`, rate limited to
+  10 checks per minute per IP.
+- `lib/` all logic, no platform code:
+  - `safeFetch.mjs` fetching pasted addresses safely: redirects re-checked hop
+    by hop, private and reserved IPs refused at connect time, web ports only.
+  - `fetchSite.mjs` page, scripts, deep-link probe and legal page chunks, with
+    time and size caps.
+  - `checks/` page loads, keys, settings, deep links, legal basics, headers.
+  - `rules.mjs` every legal source, official URLs only, with the date verified.
+  - `fixes.mjs` the paid content. Never sent to the browser unless
+    `includeFixes` is set (owner preview key in `UNBORK_PREVIEW_KEY`).
+- `test/` `npm test`, no network needed.
+- `tools/dev-server.mjs` local server; `tools/audit-rules.mjs` lists legal
+  sources due for a re-check (`npm run audit-rules`).
 
-1. **Does the page load at all?** The address answering with an error, a JavaScript
-   file the page asks for that is not there, or a shell with nothing to fill it.
-2. **Secret keys in your site's code.** Keys that let a stranger act as you are an
-   emergency. Keys that are meant to be public (Supabase anon and publishable keys,
-   Stripe publishable keys, Firebase browser keys) are reported as fine, because
-   hiding them is not the fix.
-3. **Settings published without a value.** Placeholders and addresses that read
-   "undefined", and code still pointing at `localhost`.
-4. **Links inside the app.** Whether refreshing a page, or opening a link someone
-   shared, gives back the app or an error.
-5. **Connection and security headers.** https, and three headers worth having.
-   These never change the traffic light: they are advice, not a fault.
+## Rules for changing checks
 
-## What it will not do
-
-It cannot run your app's JavaScript, so it never guesses. Anything that cannot be
-proved from what your host sends is left out of the report rather than reported as
-a maybe. A false alarm is worse than silence for someone who cannot read the code
-themselves.
-
-## What is here
-
-- `public/index.html` — the page you use.
-- `netlify/functions/scan.mjs` — the checker, one HTTP endpoint at `/api/scan`.
-- `lib/` — the fetching and the checks, with no platform code in them.
-- `test/` — `npm test` runs them against local fixtures, no network needed.
-- `tools/dev-server.mjs` — serves the page and the endpoint locally.
-
-The earlier pay-only-if-it-works fix service, and its free fix notes, are kept on
-the [`archive-fix-service`](../../tree/archive-fix-service) branch.
+1. A finding ships only if it can be proved from what the host sends.
+2. Calibrate every new check against at least five real live sites before it
+   ships. A finding that fires on healthy sites does not ship.
+3. Legal findings are never red, never say "compliant", and always cite a
+   source from `rules.mjs`. Re-verify sources at least every 90 days.

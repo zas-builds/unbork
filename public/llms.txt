@@ -1,0 +1,9 @@
+# Unbork
+
+> Unbork is a free website checker for apps built with AI app builders such as Lovable, Bolt, v0 and Cursor. Paste a live address and it reports, in plain English, what anyone outside can see: pages that fail to load or break on refresh, secret keys exposed in front-end JavaScript, settings published as placeholders, missing https and security headers, and legal basics (privacy policy, cookie consent when tracking tools load, tracking cookies set on arrival, and the pages Razorpay asks for). No sign-up; nothing is stored.
+
+- [Checker](https://idyllic-tapioca-a4846d.netlify.app/): paste a URL, get a traffic-light report
+- [Privacy policy](https://idyllic-tapioca-a4846d.netlify.app/privacy)
+- [Terms of use](https://idyllic-tapioca-a4846d.netlify.app/terms)
+
+Limits: Unbork checks from outside only. It does not log in, read source code or test database rules, and it is not legal advice.

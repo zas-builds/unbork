@@ -1,11 +1,17 @@
 {
   "name": "unbork",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Unbork: a plain-English checker for live sites built with Lovable, Bolt or Cursor.",
+  "description": "Unbork: a plain-English outside-in check for live sites built with AI app builders.",
   "scripts": {
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "audit-rules": "node tools/audit-rules.mjs"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "undici": "^7.30.2"
+  }
 }

@@ -3,143 +3,192 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Unbork</title>
-<meta name="description" content="Paste your live site's address and get a plain-English check for problems anyone outside can see. Free, no sign-up.">
-<style>
-  :root {
-    --ink: #1b1b1b; --soft: #5c5c5c; --line: #e3e3e0; --bg: #faf9f7; --card: #ffffff;
-    --red: #b3261e; --amber: #8a5a00; --green: #1e6b3a;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font: 17px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    padding: 0 16px;
-  }
-  main { max-width: 680px; margin: 0 auto; padding: 48px 0 72px; }
-  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 10px; letter-spacing: -0.02em; }
-  .lede { font-size: 19px; color: var(--soft); margin: 0 0 28px; }
-  form { display: flex; gap: 10px; flex-wrap: wrap; }
-  input[type=url] {
-    flex: 1 1 260px; min-width: 0; padding: 14px 16px; font-size: 17px;
-    border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink);
-  }
-  input[type=url]:focus { outline: 2px solid #3b6ea5; outline-offset: 1px; }
-  button {
-    padding: 14px 22px; font-size: 17px; font-weight: 600; cursor: pointer;
-    border: 0; border-radius: 10px; background: var(--ink); color: #fff;
-  }
-  button[disabled] { opacity: .55; cursor: progress; }
-  .hint { font-size: 15px; color: var(--soft); margin: 10px 0 0; }
-  #out { margin-top: 32px; }
-  .verdict { font-size: 21px; font-weight: 650; margin: 0 0 6px; display: flex; gap: 10px; align-items: center; }
-  .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; }
-  .red .dot { background: var(--red); } .amber .dot { background: var(--amber); } .green .dot { background: var(--green); }
-  .verdict.red { color: var(--red); } .verdict.amber { color: var(--amber); } .verdict.green { color: var(--green); }
-  .card {
-    background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--line);
-    border-radius: 10px; padding: 16px 18px; margin: 14px 0;
-  }
-  .card.red { border-left-color: var(--red); } .card.amber { border-left-color: var(--amber); }
-  .card h3 { margin: 0 0 6px; font-size: 18px; color: var(--ink); }
-  .card p { margin: 0 0 8px; }
-  .where { font-size: 14px; color: var(--soft); word-break: break-all; margin: 0; }
-  ul.safe { padding-left: 20px; color: var(--soft); font-size: 16px; }
-  .card ul { padding-left: 20px; margin: 0 0 8px; }
-  .card ul li { margin: 0 0 6px; }
-  .card.info { border-left-color: var(--line); color: var(--soft); }
-  .card.info h3 { color: var(--soft); font-size: 17px; }
-  h2.later { font-size: 16px; font-weight: 650; color: var(--soft); margin: 28px 0 0;
-             text-transform: uppercase; letter-spacing: .06em; }
-  .err { color: var(--red); }
-  footer { margin-top: 56px; font-size: 15px; color: var(--soft); border-top: 1px solid var(--line); padding-top: 18px; }
-  @media (prefers-color-scheme: dark) {
-    :root { --ink: #f2f0ed; --soft: #a8a5a0; --line: #343431; --bg: #121211; --card: #1b1b19;
-            --red: #ff8a80; --amber: #e0b457; --green: #7fd39b; }
-    button { background: #f2f0ed; color: #121211; }
-  }
-</style>
+<title>Unbork: check your vibe-coded app for broken pages, leaked keys and missing legal basics</title>
+<meta name="description" content="Paste your live Lovable, Bolt, v0 or Cursor app. In about ten seconds Unbork shows what any stranger can see: pages that break, keys that leak, and missing privacy, cookie and payment pages. Free, no sign-up.">
+<link rel="canonical" href="https://idyllic-tapioca-a4846d.netlify.app/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Unbork: is your vibe-coded app broken, leaking or missing the legal basics?">
+<meta property="og:description" content="A free plain-English check of your live app. No sign-up.">
+<meta property="og:image" content="https://idyllic-tapioca-a4846d.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eceef1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/","applicationCategory":"DeveloperApplication","operatingSystem":"Any (runs in the browser)","description":"Checks a live website built with AI app builders such as Lovable, Bolt, v0 or Cursor for broken pages, secret keys in front-end code, missing privacy policy, cookie consent and payment pages, and explains each problem in plain English.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Free check"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What does Unbork check?","acceptedAnswer":{"@type":"Answer","text":"Whether your live site loads, whether pages survive a refresh, whether secret keys are visible in your JavaScript, whether settings were published blank, your connection and security headers, and the legal basics anyone can see: a privacy policy, cookie consent when tracking tools are present, and the pages payment providers ask for."}},
+{"@type":"Question","name":"Is it really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. The check and the full list of problems are free, with no sign-up. A paid full report with step-by-step fixes and paste-ready prompts is coming."}},
+{"@type":"Question","name":"Do you store my site address or my report?","acceptedAnswer":{"@type":"Answer","text":"No. The address is used to run the check and the report is sent back to your browser. Unbork keeps neither, and sets no cookies."}},
+{"@type":"Question","name":"Is this legal advice?","acceptedAnswer":{"@type":"Answer","text":"No. The legal section reports what is visible from outside and links to the official source for every rule it mentions. It does not say whether your site is compliant."}}
+]}]}
+</script>
+<script src="/assets/app.js" defer></script>
 </head>
 <body>
-<main>
-  <h1>Is your app leaking?</h1>
-  <p class="lede">Paste the address of your live site. You get a plain-English report on problems a stranger could find from outside, with no login and no sign-up.</p>
+<a class="skip" href="#main">Skip to the checker</a>
 
-  <form id="f">
-    <label for="url" class="sr" hidden>Your site address</label>
-    <input id="url" type="url" inputmode="url" autocomplete="url" placeholder="myapp.lovable.app" required>
-    <button id="go" type="submit">Check my site</button>
-  </form>
-  <p class="hint">It takes a few seconds. Nothing is stored and we never show your keys back to you.</p>
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Unbork home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5.5A10.5 10.5 0 1 0 26.5 16" fill="none" stroke="#1a1d23" stroke-width="3.4" stroke-linecap="round"/><path d="M26.5 16A10.5 10.5 0 0 0 16 5.5" fill="none" stroke="#3047ff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      unbork
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#checks">What it checks</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="btn" href="#main" data-focus-bar>Check my site</a>
+  </div>
+</header>
 
-  <div id="out" aria-live="polite"></div>
+<main id="main">
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <h1 id="h1">Find what is broken, leaking or legally missing on your live app.</h1>
+      <p class="lede">Built it with Lovable, Bolt, v0 or Cursor? Paste the link. In about ten seconds you get a plain-English report on everything a stranger can see from outside.</p>
 
-  <footer>
-    <p>Unbork checks five things, all from outside, with no login and nothing installed: whether your page and its files load at all, secret keys left in your site&rsquo;s code, settings published without a value, whether a link inside your app survives a refresh or a share, and your connection and security headers.</p>
-    <p>It cannot run your app&rsquo;s JavaScript, so it never guesses: anything it cannot prove from what your host sends is left out of the report rather than reported as a maybe.</p>
-    <p>Built and run by Claude, an AI. <a href="https://github.com/zas-builds/unbork">Code on GitHub</a>.</p>
-  </footer>
+      <form class="bar" id="scan-form" novalidate>
+        <label for="url" class="sr">Your live site address</label>
+        <span class="lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span>
+        <input id="url" name="url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="yourapp.lovable.app" maxlength="2048" required>
+        <button class="btn" type="submit" id="go">Check my site</button>
+        <span class="sweep" aria-hidden="true"></span>
+      </form>
+      <p class="formerr" id="formerr" role="alert" hidden></p>
+      <p class="under">Free, no sign-up. We do not store your address or your report. <a href="/privacy">Privacy</a></p>
+
+      <div class="slip-stage" aria-label="An example report">
+        <div class="slip">
+          <div class="slip-head"><span class="url">example-shop.lovable.app</span><span class="tag">Example report</span></div>
+          <div class="row"><span class="dot now" aria-hidden="true"></span><span>A Supabase service role key is in your site’s code</span><span class="what">Fix now</span></div>
+          <div class="row"><span class="dot now" aria-hidden="true"></span><span>Refreshing any page except the home page shows an error</span><span class="what">Fix now</span></div>
+          <div class="row"><span class="dot soon" aria-hidden="true"></span><span>Google Analytics loads, and there is no cookie consent</span><span class="what">Legal</span></div>
+          <div class="row"><span class="dot fine" aria-hidden="true"></span><span>Every file your page asks for loaded without an error</span><span class="what">Fine</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="report" id="report" aria-live="polite" hidden></section>
+
+  <div class="band">
+    <section class="block" id="checks" aria-labelledby="h-checks">
+      <div class="wrap">
+        <h2 id="h-checks">Three ways a vibe-coded app goes wrong after it ships.</h2>
+        <p class="intro">AI builders make the app. They rarely check what happens once it is live, on a real host, in front of strangers and regulators. Unbork looks at all three in one pass.</p>
+        <div class="three">
+          <div>
+            <h3>It breaks</h3>
+            <p class="sub">What your visitors run into.</p>
+            <ul>
+              <li>The page answers with an error, or loads blank</li>
+              <li>Files your app needs are missing after deploy</li>
+              <li>Refreshing or sharing a page gives a 404</li>
+              <li>Settings published as placeholders or “undefined”</li>
+            </ul>
+          </div>
+          <div>
+            <h3>It leaks</h3>
+            <p class="sub">What a stranger can take.</p>
+            <ul>
+              <li>Database keys that bypass your security rules</li>
+              <li>Live payment, AI and email keys in the browser</li>
+              <li>No secure connection</li>
+              <li>Missing security headers, as advice only</li>
+            </ul>
+          </div>
+          <div>
+            <h3>It is missing the legal basics</h3>
+            <p class="sub">What the law and your payment provider expect.</p>
+            <ul>
+              <li>No privacy policy when you collect data</li>
+              <li>Tracking tools with no cookie consent</li>
+              <li>Tracking cookies set the moment someone arrives</li>
+              <li>Terms, refund and contact pages Razorpay asks for</li>
+            </ul>
+          </div>
+        </div>
+        <p class="cant"><strong>What it cannot see.</strong> Unbork checks from outside, like any visitor. It does not log in, read your source code or test your database rules, and it never guesses: anything it cannot prove from what your host sends is left out of the report, not reported as a maybe.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="block" id="how" aria-labelledby="h-how">
+    <div class="wrap">
+      <h2 id="h-how">From link to fix in three steps.</h2>
+      <ol class="steps">
+        <li><h3>Paste your live link</h3><p>Any public address: lovable.app, bolt.new, vercel.app, netlify.app or your own domain.</p></li>
+        <li><h3>Read the report</h3><p>A traffic light, then every problem in plain English, sorted into fix now, fix soon and legal. Each legal point links to the rule it comes from.</p></li>
+        <li><h3>Fix it in your builder</h3><p>The full report gives you the steps and a prompt to paste into Lovable, Bolt or Cursor. Then run the check again.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="band">
+    <section class="block" id="pricing" aria-labelledby="h-pricing">
+      <div class="wrap">
+        <h2 id="h-pricing">See every problem free. Pay only for the fixes.</h2>
+        <div class="plans">
+          <div class="plan">
+            <h3>Free check</h3>
+            <p class="price">Free</p>
+            <ul>
+              <li>The traffic light for your whole site</li>
+              <li>Every problem we find, in plain English</li>
+              <li>The legal basics, with official sources</li>
+              <li>Run it as often as you like</li>
+            </ul>
+            <a class="btn ghost" href="#main" data-focus-bar>Check my site</a>
+          </div>
+          <div class="plan full">
+            <h3>Full report</h3>
+            <p class="price">Soon<small>one-off, per site</small></p>
+            <ul>
+              <li>Step-by-step fix for every problem</li>
+              <li>A paste-ready prompt for Lovable, Bolt or Cursor</li>
+              <li>What each legal rule means for your app</li>
+              <li>No subscription</li>
+            </ul>
+            <button class="btn" type="button" disabled>Launching soon</button>
+            <p class="fine-print">Not on sale yet. The price will be shown here before anyone can pay.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="block" id="faq" aria-labelledby="h-faq">
+    <div class="wrap">
+      <h2 id="h-faq">Questions.</h2>
+      <div class="faq">
+        <details><summary>What does Unbork check?</summary><p>Whether your live site loads, whether pages survive a refresh, whether secret keys are visible in your JavaScript, whether settings were published blank, your connection and security headers, and the legal basics anyone can see: a privacy policy, cookie consent when tracking tools are present, and the pages payment providers ask for.</p></details>
+        <details><summary>Is it really free?</summary><p>Yes. The check and the full list of problems are free, with no sign-up. A paid full report with step-by-step fixes and paste-ready prompts is coming. Nothing is charged today.</p></details>
+        <details><summary>Do you store my site address or my report?</summary><p>No. The address is used to run the check and the report is sent back to your browser. Unbork keeps neither, sets no cookies and uses no analytics. Our host processes standard request data such as IP addresses to serve the site; the <a href="/privacy">privacy policy</a> has the detail.</p></details>
+        <details><summary>Is this legal advice?</summary><p>No. The legal section reports what is visible from outside and links to the official source for every rule it mentions, such as the GDPR, the UK regulator’s cookie guidance and India’s data protection rules. It does not say whether your site is compliant. For that, speak to a qualified lawyer.</p></details>
+        <details><summary>Does it work with Lovable, Bolt, v0 and Cursor?</summary><p>Yes, and with anything else that has a public web address. Unbork looks at the live site, not the tool that made it.</p></details>
+        <details><summary>Will the check affect my site?</summary><p>No. It makes about a dozen ordinary requests, the same as one visitor opening your home page, and changes nothing.</p></details>
+        <details><summary>Why did it not find a problem I know I have?</summary><p>Some problems, such as database rules or anything behind a login, cannot be seen from outside. Unbork only reports what it can prove, so a clean report means nothing visible from outside is wrong, not that nothing is wrong.</p></details>
+      </div>
+    </div>
+  </section>
 </main>
-<script type="module">
-const f = document.getElementById('f');
-const out = document.getElementById('out');
-const go = document.getElementById('go');
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
-const WORDS = {
-  red: 'Something needs fixing now',
-  amber: 'Worth tidying up',
-  green: 'Nothing broken or exposed that we can see',
-};
-
-async function ask(url) {
-  for (const path of ['/api/scan', '/.netlify/functions/scan']) {
-    const res = await fetch(path + '?url=' + encodeURIComponent(url), { headers: { accept: 'application/json' } });
-    if (res.status === 404) continue;
-    return res.json();
-  }
-  throw new Error('checker-unavailable');
-}
-
-f.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const url = document.getElementById('url').value.trim();
-  if (!url) return;
-  go.disabled = true;
-  out.innerHTML = '<p>Checking your site&hellip;</p>';
-  try {
-    const r = await ask(url);
-    if (!r.ok) {
-      out.innerHTML = '<p class="err">' + esc(r.error || 'We could not check that address.') + '</p>';
-      return;
-    }
-    const parts = ['<p class="verdict ' + r.verdict + '"><span class="dot"></span>' + WORDS[r.verdict] + '</p>'];
-    parts.push('<p class="where">Checked ' + esc(r.finalUrl) + '</p>');
-    const card = (i) => '<div class="card ' + esc(i.level) + '"><h3>' + esc(i.headline) + '</h3>'
-      + '<p>' + esc(i.plain) + '</p>'
-      + (i.list && i.list.length ? '<ul>' + i.list.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul>' : '')
-      + (i.where && i.where.length ? '<p class="where">Found in: ' + i.where.map(esc).join('<br>') + '</p>' : '')
-      + '</div>';
-
-    for (const i of r.items.filter((x) => x.level !== 'info')) parts.push(card(i));
-    if (r.safe.length) {
-      parts.push('<ul class="safe">' + r.safe.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ul>');
-    }
-    if (r.notes.length) {
-      parts.push('<ul class="safe">' + r.notes.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ul>');
-    }
-    const advice = r.items.filter((x) => x.level === 'info');
-    if (advice.length) {
-      parts.push('<h2 class="later">Nice to have, not urgent</h2>');
-      for (const i of advice) parts.push(card(i));
-    }
-    out.innerHTML = parts.join('');
-  } catch {
-    out.innerHTML = '<p class="err">The checker is not answering right now. Please try again in a minute.</p>';
-  } finally {
-    go.disabled = false;
-  }
-});
-</script>
+<footer class="foot">
+  <div class="wrap">
+    <span>© 2026 Unbork</span>
+    <nav aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy#cookies">Cookies: none</a>
+      <a href="/assets/fonts/OFL.txt">Font licences</a>
+    </nav>
+  </div>
+</footer>
 </body>
 </html>

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://idyllic-tapioca-a4846d.netlify.app/sitemap.xml

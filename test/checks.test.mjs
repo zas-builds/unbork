@@ -133,7 +133,7 @@ test('missing security headers are advice only and never change the verdict', as
   const bare = await host({ fallback: null });
   try {
     const r = await scan(bare.base, '/plain');
-    const advice = r.items.filter((i) => i.level === 'info');
+    const advice = r.items.filter((i) => i.level === 'info' && i.group !== 'legal');
     assert.equal(advice.length, 1, 'all of it in one card, not one card each');
     assert.equal(advice[0].list.length, 3);
     assert.equal(r.verdict, 'green', 'advice must not make a working site look broken');
@@ -149,7 +149,7 @@ test('missing security headers are advice only and never change the verdict', as
   });
   try {
     const r = await scan(tidy.base, '/plain');
-    assert.equal(r.items.filter((i) => i.level === 'info').length, 0);
+    assert.equal(r.items.filter((i) => i.level === 'info' && i.group !== 'legal').length, 0);
     assert.ok(r.safe.some((s) => /security headers we look for are all in place/i.test(s)));
   } finally { await tidy.stop(); }
 });
@@ -176,7 +176,7 @@ test('a content security policy counts instead of X-Frame-Options', async () => 
   const srv = await host({ fallback: null, headers: { 'content-security-policy': "frame-ancestors 'none'" } });
   try {
     const r = await scan(srv.base, '/plain');
-    const advice = r.items.find((i) => i.level === 'info');
+    const advice = r.items.find((i) => i.level === 'info' && i.group !== 'legal');
     assert.ok(advice.list.every((t) => !/other websites loading your app/.test(t)));
   } finally { await srv.stop(); }
 });
@@ -185,7 +185,7 @@ test('every check runs, and a broken site reports all of its problems at once', 
   const srv = await host({ fallback: null, gone: ['/assets/index-gone.js'] });
   try {
     const r = await scan(srv.base, '/stale');
-    assert.deepEqual(r.checksRun, ['page-loads', 'keys-in-javascript', 'settings-filled', 'deep-links', 'connection']);
+    assert.deepEqual(r.checksRun, ['page-loads', 'keys-in-javascript', 'settings-filled', 'deep-links', 'legal-basics', 'connection']);
     assert.ok(find(r, /file your app needs is missing/i), 'the missing bundle');
     assert.ok(find(r, /Refreshing or sharing/), 'and the deep links, in the same report');
     assert.equal(r.verdict, 'red');
