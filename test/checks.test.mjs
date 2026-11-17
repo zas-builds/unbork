@@ -81,7 +81,7 @@ test('an ordinary page answering not found is correct, not a fault', async () =>
     const r = await scan(srv.base, '/plain');
     assert.equal(r.verdict, 'green');
     assert.equal(find(r, /Refreshing or sharing/), undefined);
-    assert.ok(r.safe.some((s) => /correct behaviour for a site like yours/i.test(s)));
+    assert.ok(r.safe.some((s) => /that is what should happen/i.test(s)));
   } finally { await srv.stop(); }
 });
 
@@ -97,8 +97,8 @@ test('settings left unfilled are reported, and a local address separately', asyn
     // Two placeholders, one cause, one card.
     assert.equal(r.items.filter((i) => /settings? left blank/.test(i.headline)).length, 1);
     assert.equal(blank.list.length, 2, 'each placeholder listed inside the one card');
-    const local = find(r, /points at your own computer/);
-    assert.ok(local, 'the localhost address should be reported');
+    const local = find(r, /asks your own computer for data/);
+    assert.ok(local, 'a localhost API address should be reported');
     assert.equal(local.level, 'amber', 'left-over test code is not an emergency');
     // The red card must come first: it is the one that matters.
     assert.equal(r.items[0].level, 'red');
@@ -152,6 +152,24 @@ test('missing security headers are advice only and never change the verdict', as
     assert.equal(r.items.filter((i) => i.level === 'info').length, 0);
     assert.ok(r.safe.some((s) => /security headers we look for are all in place/i.test(s)));
   } finally { await tidy.stop(); }
+});
+
+test('a bare mention of localhost is not reported, only one used as an address', async () => {
+  const srv = await host({ fallback: SHELL });
+  try {
+    // What real Lovable bundles contain: a comparison, not a call.
+    const r = await scan(srv.base, '/spa');
+    assert.equal(find(r, /own computer/), undefined);
+  } finally { await srv.stop(); }
+
+  const { SETTINGS_CHECK } = await import('../lib/checks/settings.mjs');
+  const site = (text) => ({ finalUrl: 'https://x.test/', html: '', assets: [{ url: 'https://x.test/a.js', body: text, status: 200 }] });
+  const fires = (text) => SETTINGS_CHECK.run(site(text)).items.some((i) => /own computer/.test(i.headline));
+  assert.equal(fires('const isDev = location.origin === "http://localhost:5173";'), false, 'a development check is not a fault');
+  assert.equal(fires('if (url.startsWith("http://localhost")) return true;'), false);
+  assert.equal(fires('const API_URL = "http://localhost:3000/api";'), true);
+  assert.equal(fires('fetch("http://localhost:8000/items")'), true);
+  assert.equal(fires('{ baseURL: "http://127.0.0.1:4000" }'), true);
 });
 
 test('a content security policy counts instead of X-Frame-Options', async () => {

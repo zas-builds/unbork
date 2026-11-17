@@ -90,9 +90,9 @@ export const unsetHtml = `<!doctype html>
 </body></html>`;
 
 export const unsetJs = `const url = "https://undefined.supabase.co";
-const api = "http://localhost:3000/api";
+const API_URL = "http://localhost:3000/api";
 const token = "YOUR_SUPABASE_ANON_KEY";
-export { url, api, token };`;
+export { url, API_URL, token };`;
 
 // The shell is published but the bundle it asks for is not there.
 export const staleHtml = `<!doctype html>
