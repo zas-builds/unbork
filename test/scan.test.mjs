@@ -9,12 +9,20 @@ import { KEYS, okHtml, okJs, ROUTES } from './fixtures.mjs';
 
 const SERVICE_ROLE_JWT = KEYS.serviceRole;
 
-// Serves the fixtures over real HTTP so the fetching code is exercised, not mocked.
-async function startFixtureServer() {
+// Serves the fixtures over real HTTP so the fetching code is exercised, not
+// mocked. By default it behaves like a correctly configured host for a
+// single-page app: an unknown path gets the app shell, not an error. Pass
+// { fallback: null } for a host that has no such rule.
+const SHELL = '<!doctype html><html><body><div id="root"></div><script src="/assets/app.js"></script></body></html>';
+
+async function startFixtureServer({ fallback = SHELL } = {}) {
   const routes = ROUTES;
   const server = createServer((req, res) => {
     const hit = routes[req.url.split('?')[0]];
-    if (!hit) { res.writeHead(404); res.end('not found'); return; }
+    if (!hit) {
+      if (fallback) { res.writeHead(200, { 'content-type': 'text/html' }); res.end(fallback); return; }
+      res.writeHead(404, { 'content-type': 'text/html' }); res.end('<h1>Not found</h1>'); return;
+    }
     res.writeHead(200, { 'content-type': hit[0] });
     res.end(hit[1]);
   });
@@ -73,7 +81,8 @@ test('end to end: a leaky site comes back red, in plain English, with no key ech
     const r = await runScan(`${srv.base}/bad`, { allowLocal: true });
     assert.equal(r.ok, true);
     assert.equal(r.verdict, 'red');
-    const headlines = r.items.map((i) => i.headline).sort();
+    // Advice-level items are tested separately; this test is about the keys.
+    const headlines = r.items.filter((i) => i.level !== 'info').map((i) => i.headline).sort();
     assert.deepEqual(headlines, [
       'Anyone who opens your site can take over your database',
       'Your AI key is in your site\u2019s code',
@@ -97,7 +106,7 @@ test('end to end: a tidy site comes back green and says why the public keys are 
   try {
     const r = await runScan(`${srv.base}/ok`, { allowLocal: true });
     assert.equal(r.verdict, 'green');
-    assert.equal(r.items.length, 0);
+    assert.equal(r.items.filter((i) => i.level !== 'info').length, 0);
     assert.ok(r.safe.some((s) => /no key that lets a stranger act as you/i.test(s)));
     assert.ok(r.safe.some((s) => /anon key/i.test(s)));
   } finally { await srv.stop(); }

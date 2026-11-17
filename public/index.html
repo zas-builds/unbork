@@ -45,6 +45,12 @@
   .card p { margin: 0 0 8px; }
   .where { font-size: 14px; color: var(--soft); word-break: break-all; margin: 0; }
   ul.safe { padding-left: 20px; color: var(--soft); font-size: 16px; }
+  .card ul { padding-left: 20px; margin: 0 0 8px; }
+  .card ul li { margin: 0 0 6px; }
+  .card.info { border-left-color: var(--line); color: var(--soft); }
+  .card.info h3 { color: var(--soft); font-size: 17px; }
+  h2.later { font-size: 16px; font-weight: 650; color: var(--soft); margin: 28px 0 0;
+             text-transform: uppercase; letter-spacing: .06em; }
   .err { color: var(--red); }
   footer { margin-top: 56px; font-size: 15px; color: var(--soft); border-top: 1px solid var(--line); padding-top: 18px; }
   @media (prefers-color-scheme: dark) {
@@ -69,7 +75,8 @@
   <div id="out" aria-live="polite"></div>
 
   <footer>
-    <p>Today Unbork checks one thing: keys in your site&rsquo;s code that let a stranger act as you. More checks are being added, and each one goes live only once it is tested.</p>
+    <p>Unbork checks five things, all from outside, with no login and nothing installed: whether your page and its files load at all, secret keys left in your site&rsquo;s code, settings published without a value, whether a link inside your app survives a refresh or a share, and your connection and security headers.</p>
+    <p>It cannot run your app&rsquo;s JavaScript, so it never guesses: anything it cannot prove from what your host sends is left out of the report rather than reported as a maybe.</p>
     <p>Built and run by Claude, an AI. <a href="https://github.com/zas-builds/unbork">Code on GitHub</a>.</p>
   </footer>
 </main>
@@ -82,7 +89,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;
 const WORDS = {
   red: 'Something needs fixing now',
   amber: 'Worth tidying up',
-  green: 'Nothing found that a stranger could use',
+  green: 'Nothing broken or exposed that we can see',
 };
 
 async function ask(url) {
@@ -108,15 +115,23 @@ f.addEventListener('submit', async (e) => {
     }
     const parts = ['<p class="verdict ' + r.verdict + '"><span class="dot"></span>' + WORDS[r.verdict] + '</p>'];
     parts.push('<p class="where">Checked ' + esc(r.finalUrl) + '</p>');
-    for (const i of r.items) {
-      parts.push('<div class="card ' + esc(i.level) + '"><h3>' + esc(i.headline) + '</h3><p>' + esc(i.plain) + '</p>'
-        + '<p class="where">Found in: ' + i.where.map(esc).join('<br>') + '</p></div>');
-    }
+    const card = (i) => '<div class="card ' + esc(i.level) + '"><h3>' + esc(i.headline) + '</h3>'
+      + '<p>' + esc(i.plain) + '</p>'
+      + (i.list && i.list.length ? '<ul>' + i.list.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul>' : '')
+      + (i.where && i.where.length ? '<p class="where">Found in: ' + i.where.map(esc).join('<br>') + '</p>' : '')
+      + '</div>';
+
+    for (const i of r.items.filter((x) => x.level !== 'info')) parts.push(card(i));
     if (r.safe.length) {
       parts.push('<ul class="safe">' + r.safe.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ul>');
     }
     if (r.notes.length) {
       parts.push('<ul class="safe">' + r.notes.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ul>');
+    }
+    const advice = r.items.filter((x) => x.level === 'info');
+    if (advice.length) {
+      parts.push('<h2 class="later">Nice to have, not urgent</h2>');
+      for (const i of advice) parts.push(card(i));
     }
     out.innerHTML = parts.join('');
   } catch {
