@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lovable app shows 404 when you refresh? Here is the one-line fix | Unbork</title>
+<meta name="description" content="Your app has only one real file, index.html. Refreshing /dashboard makes the host look for a file that does not exist. One rewrite rule fixes it. Exact rules for Netlify and Vercel, from their own docs.">
+<link rel="canonical" href="https://idyllic-tapioca-a4846d.netlify.app/guides/lovable-404-on-refresh">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lovable app 404s on refresh: the one-line fix">
+<meta property="og:description" content="Your app has only one real file, index.html. Refreshing /dashboard makes the host look for a file that does not exist. One rewrite rule fixes it. Exact rules for Netlify and Vercel, from their own docs.">
+<meta property="og:image" content="https://idyllic-tapioca-a4846d.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eceef1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does my Lovable app show 404 when I refresh the page?","acceptedAnswer":{"@type":"Answer","text":"Because your app has only one real page file. React builds the other addresses in the browser, so when you refresh /dashboard the host looks for a file called dashboard, cannot find one, and answers 404. The fix is one rule telling the host to serve index.html for every address and let the app sort out the rest."}}]},{"@type":"Article","headline":"Lovable app shows 404 when you refresh? Here is the one-line fix | Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/guides/lovable-404-on-refresh","datePublished":"2026-11-18","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/"}}]}
+</script>
+</head>
+<body>
+<header class="top scrolled">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Unbork home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5.5A10.5 10.5 0 1 0 26.5 16" fill="none" stroke="#1a1d23" stroke-width="3.4" stroke-linecap="round"/><path d="M26.5 16A10.5 10.5 0 0 0 16 5.5" fill="none" stroke="#3047ff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      unbork
+    </a>
+    <a class="btn" href="/">Check my site</a>
+  </div>
+</header>
+<main class="doc" id="main"><div class="wrap">
+<h1>Why does my Lovable app show 404 when I refresh the page?</h1>
+<p class="updated">Written 18 November 2026. Every source below was opened and checked on the date given.</p>
+<p><strong>Short answer:</strong> your app has only one real page file. React builds the other addresses in the browser, so when you refresh <code>/dashboard</code> the host looks for a file called <code>dashboard</code>, cannot find one, and answers 404. The fix is one rule telling the host to serve <code>index.html</code> for every address.</p>
+<p>Nothing is wrong with your code, your database or your build. This is a host setting, and it is two lines in one file.</p>
+
+<h2>How to tell this is your problem</h2>
+<ul>
+  <li>The home page works. The app only breaks when you <em>refresh</em> a page inside it, or when someone opens a link you shared.</li>
+  <li>Clicking through the app from the home page works fine.</li>
+  <li>You see your host&#8217;s 404 page, not your own, and not a blank screen. A blank screen with no error is a different problem: run <a href="/">a free check</a> and it will tell you which one you have.</li>
+</ul>
+
+<h2>When it happens, and when it does not</h2>
+<p>You usually will not see this on a <code>lovable.app</code> address. On 18 November 2026 we checked 35 live Lovable apps from outside and not one of them 404ed on a deep link, because Lovable&#8217;s own hosting already applies the rule. That is our own measurement, not a claim from Lovable.</p>
+<p>It appears once the app is served by something you set up yourself: you exported the code to GitHub and deployed it to Netlify, Vercel or your own server, or you are hosting the built files on ordinary web hosting. Each of those needs telling.</p>
+
+<h2>Netlify</h2>
+<p>Add a file called <code>_redirects</code> in your published folder containing one line:</p>
+<pre><code>/*  /index.html  200</code></pre>
+<p>Or put the same rule in <code>netlify.toml</code> at the top of your project:</p>
+<pre><code>[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200</code></pre>
+<p>Netlify&#8217;s own documentation gives exactly these two forms and says the rule &#8220;will effectively serve the index.html instead of giving a 404 no matter what URL the browser requests&#8221; (<a href="https://docs.netlify.com/manage/routing/redirects/rewrites-proxies/" rel="noopener">Netlify docs: Rewrites and proxies</a>, read 18 November 2026). Status 200 matters: it serves your app at the address the visitor typed instead of sending them somewhere else.</p>
+
+<h2>Vercel</h2>
+<p>Add <code>vercel.json</code> at the top of your project:</p>
+<pre><code>{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}</code></pre>
+<p>Rewrites in Vercel are defined in <code>vercel.json</code> with a <code>source</code> and a <code>destination</code>, and regular expressions are allowed in <code>source</code> (<a href="https://vercel.com/docs/routing/rewrites" rel="noopener">Vercel docs: Rewrites</a>, read 18 November 2026). One caveat from that same page: if your project is Next.js, Astro or SvelteKit, use the framework&#8217;s own routing rather than this rule. A plain Vite and React app, which is what Lovable produces, has no framework routing of its own, so the rule above is the right place.</p>
+
+<h2>Any other host</h2>
+<p>The rule is always the same sentence in a different accent: <em>for any address that is not a real file, serve index.html with a 200</em>. If you are on shared hosting or your own server, that is what to ask your host&#8217;s support for. Do not let anyone talk you into a 301 or 302 redirect to the home page: that loses the address the visitor asked for, so shared links stop working even though the 404 goes away.</p>
+
+<h2>If you would rather your builder did it</h2>
+<p>Paste this into Lovable, Bolt or Cursor:</p>
+<pre><code>My deployed app returns 404 when I refresh any page other than the home page,
+because the host does not know this is a single-page app. Add the correct
+single-page-app rewrite for the host I am deploying to, serving index.html with
+status 200 for any path that is not a real file. Tell me which file you created
+or changed and what I need to do on the host. Change nothing about my routes or
+components.</code></pre>
+
+<h2>How to check it worked</h2>
+<p>Open a page inside your app, copy the address from the bar, paste it into a private window and press enter. If the app loads, it is fixed. <a href="/">Unbork</a> checks the same thing from outside, free, with no sign-up.</p>
+</div></main>
+<footer class="foot">
+  <div class="wrap">
+    <span>&#169; 2026 Unbork</span>
+    <nav aria-label="Guides and legal">
+      <a href="/guides/lovable-404-on-refresh">404 on refresh</a>
+      <a href="/guides/is-my-supabase-key-safe">Supabase keys</a>
+      <a href="/guides/does-my-app-need-a-cookie-banner">Cookie banners</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

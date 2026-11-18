@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Does my app need a cookie banner? | Unbork</title>
+<meta name="description" content="Only if it sets cookies or tracking that are not strictly necessary, such as analytics or an advertising pixel. If it sets nothing but a login session, no banner is needed. What the UK and EU rules actually say, with sources.">
+<link rel="canonical" href="https://idyllic-tapioca-a4846d.netlify.app/guides/does-my-app-need-a-cookie-banner">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Does my app need a cookie banner?">
+<meta property="og:description" content="Only if it sets cookies or tracking that are not strictly necessary, such as analytics or an advertising pixel. If it sets nothing but a login session, no banner is needed. What the UK and EU rules actually say, with sources.">
+<meta property="og:image" content="https://idyllic-tapioca-a4846d.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eceef1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does my website or app need a cookie banner?","acceptedAnswer":{"@type":"Answer","text":"Only if your app sets cookies or similar tracking that are not strictly necessary, such as analytics or an advertising pixel, and people in the UK or EU can use it. If the only thing it stores is what the app needs to work, such as a login session, you do not need a banner. If you have added Google Analytics, a Meta pixel or similar, you need consent before they load, not a banner that appears while they are already running."}}]},{"@type":"Article","headline":"Does my app need a cookie banner? | Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/guides/does-my-app-need-a-cookie-banner","datePublished":"2026-11-18","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/"}}]}
+</script>
+</head>
+<body>
+<header class="top scrolled">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Unbork home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5.5A10.5 10.5 0 1 0 26.5 16" fill="none" stroke="#1a1d23" stroke-width="3.4" stroke-linecap="round"/><path d="M26.5 16A10.5 10.5 0 0 0 16 5.5" fill="none" stroke="#3047ff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      unbork
+    </a>
+    <a class="btn" href="/">Check my site</a>
+  </div>
+</header>
+<main class="doc" id="main"><div class="wrap">
+<h1>Does my app need a cookie banner?</h1>
+<p class="updated">Written 18 November 2026. Every source below was opened and checked on the date given.</p>
+<p><strong>Short answer:</strong> only if your app sets cookies or similar tracking that are not strictly necessary, such as analytics or an advertising pixel, and people in the UK or EU can use it. If the only thing it stores is what the app needs to work, such as a login session, you do not need a banner.</p>
+<p>And if you have added Google Analytics, a Meta pixel, Hotjar or similar, the requirement is consent <em>before</em> they load, not a banner that appears while they are already running.</p>
+
+<h2>What the rule actually says</h2>
+<p>UK PECR regulation 6, and Article 5(3) of the EU ePrivacy Directive, require the visitor&#8217;s consent before non-essential cookies and similar tracking are set. The UK regulator puts it bluntly: you cannot set them on your homepage before the visitor has agreed (<a href="https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/" rel="noopener">ICO: Cookies and similar technologies</a>, verified 17 November 2026).</p>
+<p>&#8220;Strictly necessary&#8221; is narrower than it sounds. A login session, a shopping basket, a security token: necessary. Analytics, including Google Analytics: not necessary, however much you want the numbers.</p>
+
+<h2>Three things people mix up with the banner</h2>
+<ul>
+  <li><strong>A privacy policy.</strong> Separate, and required far more often. If you collect personal data from people in the EU or UK, Article 13 of the GDPR says you must tell them who you are, how to contact you, why you collect it, on what legal basis, who receives it, how long you keep it and what rights they have (<a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" rel="noopener">EU GDPR, Article 13</a>, verified 17 November 2026). A sign-up form with no privacy policy is the most common gap we find, banner or no banner.</li>
+  <li><strong>India.</strong> The Digital Personal Data Protection Act 2023 and its 2025 Rules require a clear, plain-language notice before you ask for consent. The Rules setting out what that notice must contain take effect in May 2027, eighteen months after publication in November 2025, so they do not bite yet (<a href="https://www.meity.gov.in/documents/act-and-policies/digital-personal-data-protection-rules-2025-gDOxUjMtQWa" rel="noopener">MeitY: DPDP Rules 2025</a>, verified 17 November 2026).</li>
+  <li><strong>California.</strong> Not a cookie banner but an opt-out link. A business that sells or shares personal information, which includes passing it to advertising pixels, must show a clear link titled &#8220;Do Not Sell or Share My Personal Information&#8221;. It applies only to businesses above the law&#8217;s size thresholds (<a href="https://oag.ca.gov/privacy/ccpa" rel="noopener">California Attorney General: CCPA</a>, verified 17 November 2026).</li>
+</ul>
+
+<h2>What to do, in order</h2>
+<ol>
+  <li>Find out what your app actually loads. A <a href="/">free check</a> lists the tracking tools on your live site and whether a consent tool is loaded with them.</li>
+  <li>If you do not really use the analytics, remove them. No tracking means no banner, no consent tool and nothing to get wrong. This is the option most small apps should take and almost nobody considers.</li>
+  <li>If you do want them, add a consent tool that blocks the tracking until the visitor agrees. A banner that appears while Google Analytics is already loading satisfies nobody and is exactly what regulators have fined people for.</li>
+  <li>Either way, write a privacy policy and link it in your footer. It is needed far more often than the banner is.</li>
+</ol>
+
+<h2>What we see in the wild</h2>
+<p>On 18 November 2026 we checked 30 published Lovable sites from outside. Five were loading tracking tools with no consent tool anywhere on the page. Twelve had no privacy policy a visitor could find from the home page, and eight of those twelve were collecting personal data through a sign-in or a form. Only one site in thirty was free of all of it. Counts only: we do not publish which sites.</p>
+<p>This page is information, not legal advice. It covers what anyone can see from outside your app; it cannot see what your code does with data once it has it.</p>
+</div></main>
+<footer class="foot">
+  <div class="wrap">
+    <span>&#169; 2026 Unbork</span>
+    <nav aria-label="Guides and legal">
+      <a href="/guides/lovable-404-on-refresh">404 on refresh</a>
+      <a href="/guides/is-my-supabase-key-safe">Supabase keys</a>
+      <a href="/guides/does-my-app-need-a-cookie-banner">Cookie banners</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

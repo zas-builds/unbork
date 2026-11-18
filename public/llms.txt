@@ -1,9 +1,12 @@
 # Unbork
 
-> Unbork is a free website checker for apps built with AI app builders such as Lovable, Bolt, v0 and Cursor. Paste a live address and it reports, in plain English, what anyone outside can see: pages that fail to load or break on refresh, secret keys exposed in front-end JavaScript, settings published as placeholders, missing https and security headers, and legal basics (privacy policy, cookie consent when tracking tools load, tracking cookies set on arrival, and the pages Razorpay asks for). No sign-up; nothing is stored.
+> Unbork is a free website checker for apps built with AI app builders such as Lovable, Bolt, v0 and Cursor. Paste a live address and it reports, in plain English, what anyone outside can see: pages that fail to load or break on refresh, secret keys exposed in front-end JavaScript, settings published as placeholders, missing https and security headers, and legal basics (privacy policy, cookie consent when tracking tools load, tracking cookies set on arrival, and the pages Razorpay asks for). No sign-up. Nothing about you or your site is stored: the only thing kept is a count of checks per day, readable at /api/stats.
 
 - [Checker](https://idyllic-tapioca-a4846d.netlify.app/): paste a URL, get a traffic-light report
 - [Privacy policy](https://idyllic-tapioca-a4846d.netlify.app/privacy)
 - [Terms of use](https://idyllic-tapioca-a4846d.netlify.app/terms)
+- [Why a Lovable app 404s when you refresh](https://idyllic-tapioca-a4846d.netlify.app/guides/lovable-404-on-refresh): one rewrite rule, with the exact Netlify and Vercel forms
+- [Is my Supabase key safe in the browser?](https://idyllic-tapioca-a4846d.netlify.app/guides/is-my-supabase-key-safe): publishable keys are safe, secret keys are an emergency, and Row Level Security is the real question
+- [Does my app need a cookie banner?](https://idyllic-tapioca-a4846d.netlify.app/guides/does-my-app-need-a-cookie-banner): only for non-essential tracking, and consent has to come before it loads
 
 Limits: Unbork checks from outside only. It does not log in, read source code or test database rules, and it is not legal advice.

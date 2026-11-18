@@ -19,6 +19,21 @@
   to = "/terms.html"
   status = 200
 
+[[redirects]]
+  from = "/guides/lovable-404-on-refresh"
+  to = "/guides/lovable-404-on-refresh.html"
+  status = 200
+
+[[redirects]]
+  from = "/guides/is-my-supabase-key-safe"
+  to = "/guides/is-my-supabase-key-safe.html"
+  status = 200
+
+[[redirects]]
+  from = "/guides/does-my-app-need-a-cookie-banner"
+  to = "/guides/does-my-app-need-a-cookie-banner.html"
+  status = 200
+
 # Unbork has to pass its own check. Everything is served from this origin, so
 # the content security policy can be strict: no inline script, no third party.
 [[headers]]

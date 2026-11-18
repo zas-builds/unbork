@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Is my Supabase key safe in the browser? | Unbork</title>
+<meta name="description" content="A publishable or anon key in your front-end code is fine, and Supabase says so, as long as Row Level Security is on. A key starting sb_secret_ or a service_role key is an emergency. How to tell them apart in a minute.">
+<link rel="canonical" href="https://idyllic-tapioca-a4846d.netlify.app/guides/is-my-supabase-key-safe">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Is my Supabase key safe in the browser?">
+<meta property="og:description" content="A publishable or anon key in your front-end code is fine, and Supabase says so, as long as Row Level Security is on. A key starting sb_secret_ or a service_role key is an emergency. How to tell them apart in a minute.">
+<meta property="og:image" content="https://idyllic-tapioca-a4846d.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eceef1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my Supabase key safe to expose in the browser?","acceptedAnswer":{"@type":"Answer","text":"If the key in your front-end code starts with sb_publishable_ (or is the older anon key), it is meant to be public and Supabase says it is safe to expose, as long as Row Level Security is switched on for your tables. If it starts with sb_secret_, or it is the service_role key, it is not safe: that key ignores your rules and anyone who finds it can read and change everything."}}]},{"@type":"Article","headline":"Is my Supabase key safe in the browser? | Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/guides/is-my-supabase-key-safe","datePublished":"2026-11-18","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/"}}]}
+</script>
+</head>
+<body>
+<header class="top scrolled">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Unbork home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5.5A10.5 10.5 0 1 0 26.5 16" fill="none" stroke="#1a1d23" stroke-width="3.4" stroke-linecap="round"/><path d="M26.5 16A10.5 10.5 0 0 0 16 5.5" fill="none" stroke="#3047ff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      unbork
+    </a>
+    <a class="btn" href="/">Check my site</a>
+  </div>
+</header>
+<main class="doc" id="main"><div class="wrap">
+<h1>Is my Supabase key safe in the browser?</h1>
+<p class="updated">Written 18 November 2026. Every source below was opened and checked on the date given.</p>
+<p><strong>Short answer:</strong> if the key starts with <code>sb_publishable_</code>, or it is the older <code>anon</code> key, it is meant to be public and Supabase says it is safe to expose. If it starts with <code>sb_secret_</code>, or it is the <code>service_role</code> key, it is an emergency: that key ignores your rules, and anyone who finds it can read, change and delete everything.</p>
+<p>Everybody can read every line of JavaScript your site sends. There is no such thing as a key hidden in a web page.</p>
+
+<h2>Which key do I have?</h2>
+<ul>
+  <li><code>sb_publishable_&#8230;</code> &#8212; publishable. Supabase&#8217;s own table of keys describes it as &#8220;Safe to expose online: web page, mobile or desktop app, GitHub actions, CLIs, source code.&#8221;</li>
+  <li><code>sb_secret_&#8230;</code> &#8212; secret. Server only. Supabase states plainly: &#8220;A secret key doesn&#8217;t work in a browser.&#8221;</li>
+  <li>A very long key beginning <code>eyJ</code> &#8212; one of the older pair, <code>anon</code> or <code>service_role</code>. Supabase says: &#8220;If a tool, tutorial, or AI assistant tells you to copy a long key that begins with eyJ, it was written for the legacy keys.&#8221; <code>anon</code> behaves like publishable; <code>service_role</code> behaves like secret and must never reach a browser.</li>
+</ul>
+<p>All quotes from <a href="https://supabase.com/docs/guides/getting-started/api-keys" rel="noopener">Supabase docs: API keys</a>, read 18 November 2026.</p>
+
+<h2>The part most people miss</h2>
+<p>The publishable key is safe <em>because of</em> Row Level Security, not instead of it. Supabase&#8217;s own wording for where to use it is: &#8220;Anyone can read it, so it only reaches what Row Level Security allows.&#8221; Turn those rules off and the public key is a key to the whole table. So the question &#8220;is my key safe&#8221; is really two questions, and the second one matters more: <em>are my tables locked?</em></p>
+<p>Being straight about our own limits: a check from outside, including ours, can see which keys your site publishes. It cannot see your table rules. Nobody can tell you your data is safe without looking at your Supabase project, and anyone who says otherwise from the outside is guessing.</p>
+
+<h2>How to find out what your app publishes</h2>
+<p>Run a <a href="/">free check</a>: it reads the JavaScript your live site serves and tells you which keys are in it and which of them matter. Or do it by hand: open your site, press Ctrl+U (Cmd+U on a Mac) to view source, open each <code>.js</code> file it links, and search for <code>sb_secret</code>, <code>service_role</code> and <code>eyJ</code>.</p>
+
+<h2>If you find a secret key in your front-end code</h2>
+<ol>
+  <li>Treat it as stolen. Create a new one in Supabase (Project Settings, then API Keys) and delete the old one. Hiding a published key does nothing: it is already out.</li>
+  <li>Move whatever used it into server-side code, reading the key from an environment secret. Never give it a <code>VITE_</code>, <code>NEXT_PUBLIC_</code> or <code>REACT_APP_</code> prefix: Supabase&#8217;s own example is blunt about it, &#8220;Server-only. Never prefix these, or your bundler will ship the key.&#8221;</li>
+  <li>Publish again and check the key has really gone.</li>
+</ol>
+
+<h2>What we see in the wild</h2>
+<p>On 18 November 2026 we checked 35 live Lovable apps from outside. None of them had a secret or <code>service_role</code> key in their front-end JavaScript. Publishable keys were common and are fine. So if your app is on Lovable&#8217;s own hosting, this is probably not where your problem is. The keys that leak tend to leak after somebody wires up a second service by hand.</p>
+<p>This page is about keys you can see from outside. It is not a security audit and it is not legal advice.</p>
+</div></main>
+<footer class="foot">
+  <div class="wrap">
+    <span>&#169; 2026 Unbork</span>
+    <nav aria-label="Guides and legal">
+      <a href="/guides/lovable-404-on-refresh">404 on refresh</a>
+      <a href="/guides/is-my-supabase-key-safe">Supabase keys</a>
+      <a href="/guides/does-my-app-need-a-cookie-banner">Cookie banners</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>
