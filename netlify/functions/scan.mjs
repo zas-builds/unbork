@@ -35,10 +35,28 @@ function previewUnlocked(request) {
   return diff === 0;
 }
 
+// A whole report is a few kilobytes of plain English. ?view=summary returns
+// just the verdict and the names of what was found, which is what counting
+// across many sites needs. It strips information out, never adds any.
+function summarise(report) {
+  return {
+    ok: true,
+    url: report.url,
+    status: report.status,
+    verdict: report.verdict,
+    found: report.items.map((i) => ({ id: i.id, level: i.level })),
+    scripts: report.scripts,
+    ms: report.ms,
+  };
+}
+
 export default async function handler(request) {
   let target = null;
+  let view = '';
   if (request.method === 'GET') {
-    target = new URL(request.url).searchParams.get('url');
+    const params = new URL(request.url).searchParams;
+    target = params.get('url');
+    view = params.get('view') || '';
   } else if (request.method === 'POST') {
     const type = request.headers.get('content-type') || '';
     if (!/application\/json/i.test(type)) return json({ ok: false, error: 'Send JSON.' }, 415);
@@ -59,6 +77,7 @@ export default async function handler(request) {
     const report = await runScan(target, { includeFixes: previewUnlocked(request) });
     // One number per day, nothing about the site or the visitor. See lib/counter.mjs.
     await recordScanQuietly(report.ok ? 'ok' : 'failed');
+    if (view === 'summary' && report.ok) return json(summarise(report));
     return json(report, report.ok ? 200 : 400);
   } catch (err) {
     await recordScanQuietly('failed');
