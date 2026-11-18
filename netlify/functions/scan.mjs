@@ -75,8 +75,10 @@ export default async function handler(request) {
 
   try {
     const report = await runScan(target, { includeFixes: previewUnlocked(request) });
-    // One number per day, nothing about the site or the visitor. See lib/counter.mjs.
-    await recordScanQuietly(report.ok ? 'ok' : 'failed');
+    // One number per day, nothing about the site or the visitor. See
+    // lib/counter.mjs. Summary scans are ours: nothing on the site asks for
+    // that view, so counting them would only flatter us.
+    if (view !== 'summary') await recordScanQuietly(report.ok ? 'ok' : 'failed');
     if (view === 'summary' && report.ok) return json(summarise(report));
     return json(report, report.ok ? 200 : 400);
   } catch (err) {
