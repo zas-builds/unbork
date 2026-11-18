@@ -12,6 +12,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.9",
     "undici": "^7.30.2"
   }
 }

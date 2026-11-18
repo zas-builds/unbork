@@ -3,6 +3,7 @@
 // network or a deploy; this file only deals with HTTP.
 
 import { runScan } from '../../lib/scan.mjs';
+import { recordScanQuietly } from '../../lib/counter.mjs';
 
 // Netlify enforces this before the function runs, on every plan:
 // docs.netlify.com/manage/security/secure-access-to-sites/rate-limiting/
@@ -56,8 +57,11 @@ export default async function handler(request) {
 
   try {
     const report = await runScan(target, { includeFixes: previewUnlocked(request) });
+    // One number per day, nothing about the site or the visitor. See lib/counter.mjs.
+    await recordScanQuietly(report.ok ? 'ok' : 'failed');
     return json(report, report.ok ? 200 : 400);
   } catch (err) {
+    await recordScanQuietly('failed');
     // Never leak internals: the message is for the person, not a developer.
     return json({ ok: false, error: 'Something went wrong at our end while checking your site. Please try again.' }, 500);
   }
