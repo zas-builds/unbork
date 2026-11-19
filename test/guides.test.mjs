@@ -20,10 +20,11 @@ const ALLOWED = [
   'https://eur-lex.europa.eu/',
   'https://www.meity.gov.in/',
   'https://oag.ca.gov/',
+  'https://razorpay.com/docs/',
 ];
 
-test('there are three guides', () => {
-  assert.equal(FILES.length, 3);
+test('there are four guides', () => {
+  assert.equal(FILES.length, 4);
 });
 
 for (const file of FILES) {

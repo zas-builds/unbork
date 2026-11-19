@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How do I add a privacy policy to my Lovable app? | Unbork</title>
+<meta name="description" content="Write down what your app actually collects, put it on a page at /privacy, and link it from the footer and every form. The page is the easy part. Knowing what your app collects is the part people get wrong, and here is how to find out.">
+<link rel="canonical" href="https://idyllic-tapioca-a4846d.netlify.app/guides/add-a-privacy-policy-to-a-lovable-app">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How do I add a privacy policy to my Lovable app?">
+<meta property="og:description" content="Write down what your app actually collects, put it on a page at /privacy, and link it from the footer and every form. The page is the easy part. Knowing what your app collects is the part people get wrong.">
+<meta property="og:image" content="https://idyllic-tapioca-a4846d.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eceef1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I add a privacy policy to my Lovable app?","acceptedAnswer":{"@type":"Answer","text":"Three things, in this order. First, find out what your app actually collects and which outside services receive it: your database, your sign-in, your analytics, your email sender, your payment provider. Second, write a page at /privacy that says exactly that, plus who runs the app, how to contact you, why you collect each thing, how long you keep it and how someone can get their data deleted. Third, link that page from your footer and from every sign-up or contact form, because a policy nobody can find does not count. Ask your builder to list the data first and show you the list before it writes a word, otherwise it will invent a policy for a company that does not exist."}}]},{"@type":"Article","headline":"How do I add a privacy policy to my Lovable app? | Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/guides/add-a-privacy-policy-to-a-lovable-app","datePublished":"2026-11-19","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/"}}]}
+</script>
+</head>
+<body>
+<header class="top scrolled">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Unbork home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5.5A10.5 10.5 0 1 0 26.5 16" fill="none" stroke="#1a1d23" stroke-width="3.4" stroke-linecap="round"/><path d="M26.5 16A10.5 10.5 0 0 0 16 5.5" fill="none" stroke="#3047ff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      unbork
+    </a>
+    <a class="btn" href="/">Check my site</a>
+  </div>
+</header>
+<main class="doc" id="main"><div class="wrap">
+<h1>How do I add a privacy policy to my Lovable app?</h1>
+<p class="updated">Written 19 November 2026. Every source below was opened and checked on the date given.</p>
+<p><strong>Short answer:</strong> write down what your app actually collects, put it on a page at <code>/privacy</code>, and link it from your footer and from every form. The page is the easy part. Knowing what your app collects is the part people get wrong, and it is the part that makes the policy true rather than decorative.</p>
+<p>Same steps for Bolt, v0, Replit or Cursor. Nothing here is specific to one builder.</p>
+
+<h2>Do you actually need one?</h2>
+<p>If your app collects anything personal, yes. A sign-in counts. An email field counts. A contact form counts. Article 13 of the GDPR says that when you collect personal data from someone you must tell them who you are, how to contact you, why you collect it and on what legal basis, who receives it, how long you keep it and what rights they have (<a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" rel="noopener">EU GDPR, Article 13</a>, verified 17 November 2026). It applies if people in the EU or UK can use your app, which on the open internet means almost everyone.</p>
+<p>In India, the Digital Personal Data Protection Act 2023 and its 2025 Rules require a clear, plain-language notice before you ask for consent. The Rules setting out what that notice must contain take effect in May 2027, eighteen months after publication in November 2025, so they do not bite yet (<a href="https://www.meity.gov.in/documents/act-and-policies/digital-personal-data-protection-rules-2025-gDOxUjMtQWa" rel="noopener">MeitY: DPDP Rules 2025</a>, verified 17 November 2026).</p>
+<p>If you plan to charge for anything, your payment provider will ask separately. Razorpay asks for links to your Contact us, Terms and conditions, Privacy policy and Cancellation and refunds pages when it reviews your website (<a href="https://razorpay.com/docs/payments/dashboard/account-settings/business-website-details/" rel="noopener">Razorpay: business website details</a>, verified 17 November 2026). People usually discover this the week they try to take their first payment, which is the worst week to discover it.</p>
+
+<h2>The three ways this goes wrong</h2>
+<ul>
+  <li><strong>A policy for a company that does not exist.</strong> Ask an AI builder for a privacy policy with no other instruction and it will write a confident page about a registered company at an invented address that keeps data for a period it made up. That is worse than no policy, because it is a public statement about you that is not true.</li>
+  <li><strong>A policy that forgets the services.</strong> Your data is not only in your app. It is in Supabase or whatever database you chose, in your sign-in provider, in your email sender, in your analytics, in your payment provider. Article 13 asks you to say who receives the data. Most generated policies name none of them.</li>
+  <li><strong>A policy nobody can reach.</strong> The page exists at <code>/privacy</code> but nothing links to it, so neither a visitor nor a regulator nor our checker can find it. If it is not in the footer, it may as well not be there.</li>
+</ul>
+
+<h2>What to do, in order</h2>
+<ol>
+  <li>Make the list first. Open your builder and paste the prompt below. Read the list it gives you and correct it. You know things about your app that the code does not say.</li>
+  <li>Have the page written from that list, at <code>/privacy</code>, with your real name or business name, a real contact email and a real address.</li>
+  <li>Link it: in the footer of every page, and next to every sign-up, contact or newsletter form.</li>
+  <li>Publish, then check from outside. A <a href="/">free check</a> looks for a privacy policy a visitor can actually find, and tells you which tracking tools your live site loads, which is the list your policy has to match.</li>
+  <li>If you handle health, financial or children&#8217;s data, or you have real revenue, pay someone qualified to read it. A generated page is a starting point, not a shield.</li>
+</ol>
+
+<h2>The prompt to paste into your builder</h2>
+<p>Copy this as it is. The order matters: it makes the builder show you the facts before it writes anything.</p>
+<pre><code>Before writing anything, read my code and list for me:
+1. Every piece of personal data this app collects, and where in the app it is collected.
+2. Where each piece is stored.
+3. Every outside service that receives any of it (database, authentication, email, analytics, advertising, payments, error reporting).
+Show me that list and wait for me to confirm or correct it.
+
+Then, using only the confirmed list, add a Privacy Policy page at /privacy and
+link it from the footer of every page and from every sign-up or contact form.
+Cover: who runs the app and how to contact them, what is collected and why, the
+legal basis, who receives it, how long it is kept, and how someone can access
+or delete their data.
+
+Rules: do not invent a company name, address, registration number or retention
+period. Where you do not know something, write [CHECK] and list every [CHECK]
+for me at the end. Do not change any other page or any app logic.</code></pre>
+
+<h2>What we see in the wild</h2>
+<p>On 18 November 2026 we checked 30 published Lovable sites from outside, taken in the order a search engine returned them. Twelve had no privacy policy a visitor could find from the home page. Eight of those twelve were collecting personal data through a sign-in or a form. Ten had no terms of any kind. Not one of the thirty was broken, leaked a key or lost a deep link on refresh: the gap in published vibe-coded apps is the paperwork, not the code. Counts only. We do not publish which sites.</p>
+<p>This page is information, not legal advice. Our checker looks at your app from outside only: it can see whether a policy is reachable, not whether what it says is true.</p>
+</div></main>
+<footer class="foot">
+  <div class="wrap">
+    <span>&#169; 2026 Unbork</span>
+    <nav aria-label="Guides and legal">
+      <a href="/guides/lovable-404-on-refresh">404 on refresh</a>
+      <a href="/guides/is-my-supabase-key-safe">Supabase keys</a>
+      <a href="/guides/does-my-app-need-a-cookie-banner">Cookie banners</a>
+      <a href="/guides/add-a-privacy-policy-to-a-lovable-app">Privacy policy</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

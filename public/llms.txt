@@ -8,5 +8,6 @@
 - [Why a Lovable app 404s when you refresh](https://idyllic-tapioca-a4846d.netlify.app/guides/lovable-404-on-refresh): one rewrite rule, with the exact Netlify and Vercel forms
 - [Is my Supabase key safe in the browser?](https://idyllic-tapioca-a4846d.netlify.app/guides/is-my-supabase-key-safe): publishable keys are safe, secret keys are an emergency, and Row Level Security is the real question
 - [Does my app need a cookie banner?](https://idyllic-tapioca-a4846d.netlify.app/guides/does-my-app-need-a-cookie-banner): only for non-essential tracking, and consent has to come before it loads
+- [How do I add a privacy policy to my Lovable app?](https://idyllic-tapioca-a4846d.netlify.app/guides/add-a-privacy-policy-to-a-lovable-app): list what the app collects first, then write the page, then link it from the footer and every form
 
 Limits: Unbork checks from outside only. It does not log in, read source code or test database rules, and it is not legal advice.
