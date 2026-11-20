@@ -34,6 +34,26 @@
   to = "/guides/does-my-app-need-a-cookie-banner.html"
   status = 200
 
+[[redirects]]
+  from = "/guides/add-a-privacy-policy-to-a-lovable-app"
+  to = "/guides/add-a-privacy-policy-to-a-lovable-app.html"
+  status = 200
+
+[[redirects]]
+  from = "/guides/what-is-row-level-security"
+  to = "/guides/what-is-row-level-security.html"
+  status = 200
+
+[[redirects]]
+  from = "/pricing"
+  to = "/pricing.html"
+  status = 200
+
+[[redirects]]
+  from = "/refunds"
+  to = "/refunds.html"
+  status = 200
+
 # Unbork has to pass its own check. Everything is served from this origin, so
 # the content security policy can be strict: no inline script, no third party.
 [[headers]]

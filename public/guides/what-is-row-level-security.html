@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is Row Level Security, and is mine on? | Unbork</title>
+<meta name="description" content="Row Level Security is the set of rules inside your database that decides which rows each visitor may see or change. Without it, the public key in your app's JavaScript opens the whole table. How to check yours, in Supabase's own words.">
+<link rel="canonical" href="https://idyllic-tapioca-a4846d.netlify.app/guides/what-is-row-level-security">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What is Row Level Security, and is mine on?">
+<meta property="og:description" content="Row Level Security is the set of rules inside your database that decides which rows each visitor may see or change. Without it, the public key in your app's JavaScript opens the whole table.">
+<meta property="og:image" content="https://idyllic-tapioca-a4846d.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eceef1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is Row Level Security, and is mine on?","acceptedAnswer":{"@type":"Answer","text":"Row Level Security is a set of rules that live inside your database and decide, for every request, which rows it may see or change. Supabase says a table in an exposed schema without it is readable and writable by any role with a grant on it, which includes the publishable key sitting in your app's JavaScript. You turn it on per table with one line of SQL, then write a policy for each operation. You cannot tell from outside whether yours is on: open your Supabase project and look, table by table."}}]},{"@type":"Article","headline":"What is Row Level Security, and is mine on? | Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/guides/what-is-row-level-security","datePublished":"2026-11-20","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/"}}]}
+</script>
+</head>
+<body>
+<header class="top scrolled">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Unbork home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5.5A10.5 10.5 0 1 0 26.5 16" fill="none" stroke="#1a1d23" stroke-width="3.4" stroke-linecap="round"/><path d="M26.5 16A10.5 10.5 0 0 0 16 5.5" fill="none" stroke="#3047ff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      unbork
+    </a>
+    <a class="btn" href="/">Check my site</a>
+  </div>
+</header>
+<main class="doc" id="main"><div class="wrap">
+<h1>What is Row Level Security, and is mine on?</h1>
+<p class="updated">Written 20 November 2026. Every source below was opened and checked on the date given.</p>
+<p><strong>Short answer:</strong> Row Level Security is a set of rules that live inside your database and decide, for every single request, which rows it is allowed to see or change. Without it, the public key in your app&#8217;s JavaScript is a key to the whole table. Supabase puts it plainly: &#8220;A table in an exposed schema without RLS is readable and writable by any role with a grant on it.&#8221;</p>
+<p>You cannot find this out from outside, and neither can we. It takes about five minutes inside your Supabase project, and it is the single most valuable five minutes available to anyone who built an app without reading the code.</p>
+
+<h2>Why this is the question that actually matters</h2>
+<p>Your app talks to your database straight from the visitor&#8217;s browser, using a publishable key. That key is meant to be public, and on its own it is harmless. It is harmless <em>because</em> Row Level Security stands between it and your rows. Switch those rules off and the same key that loads your home page will also hand over your whole customers table to anyone who asks for it.</p>
+<p>This is the difference between &#8220;my key is exposed&#8221; and &#8220;my data is exposed&#8221;. The first is normal. The second is the one that ends up on the news.</p>
+
+<h2>What a policy actually is</h2>
+<p>A policy is a rule attached to one table, and the database runs it every time anything touches that table. Supabase&#8217;s own description is the clearest one: &#8220;Think of a policy as adding a <code>WHERE</code> clause to every query.&#8221; So a rule that says &#8220;people can see their own to-dos&#8221; quietly turns every request into &#8220;&#8230; where this row belongs to you&#8221;, whoever wrote the request and whatever they asked for.</p>
+<p>Because the rule lives in the database rather than in your app, it still applies when someone skips your app entirely and calls the database directly, which is exactly what an attacker does.</p>
+
+<h2>Turning it on is one line</h2>
+<pre><code>alter table public.your_table enable row level security;</code></pre>
+<p>Run that in the SQL Editor in your Supabase dashboard, once for every table. Supabase notes what happens next: &#8220;Once RLS is enabled, no data is accessible through the API when using a publishable key, until you create policies.&#8221; In other words it locks the door first and asks you to cut the keys afterwards, which is the right way round. Expect parts of your app to go blank until you have written the policies, and do this on a day when you have an hour, not five minutes before a demo.</p>
+
+<h2>The part nearly everybody misses: grants</h2>
+<p>Two separate checks run before anyone touches a table. A grant decides whether a role may run an operation on the table at all. A policy decides which rows that operation applies to. Supabase is explicit that one does not replace the other: &#8220;Adding policies doesn&#8217;t take those grants back. A table protected only by policies still hands <code>anon</code> an insert path if you never revoke the grant.&#8221;</p>
+<p>On existing projects a new table in <code>public</code> starts with every privilege already granted to the signed-out role, the signed-in role and the service role. So the full job for a table is three lines, not one:</p>
+<pre><code>alter table public.your_table enable row level security;
+revoke all on table public.your_table from anon, authenticated;
+grant select, insert, update, delete on table public.your_table to authenticated;</code></pre>
+<p>That last line is the one to think about. Grant each role only what your app genuinely lets it do. If signed-out visitors are never meant to read a table, they should hold no grant on it at all.</p>
+
+<h2>Write one policy per operation</h2>
+<p>Reading, creating, changing and deleting are four different questions, and Supabase asks you to answer them separately: &#8220;Postgres does not accept multiple operations in one <code>for</code> clause, and a <code>for all</code> policy hides which operation each rule was meant to cover.&#8221; If your builder produced a single <code>for all</code> policy, that is a smell, not a shortcut.</p>
+<p>Two details from the same page that cost people real data. Name the role every policy applies to with a <code>to</code> clause, so a rule written for signed-in users never runs for strangers. And an update needs both halves: <code>using</code> decides which existing rows may be changed, <code>with check</code> decides what the changed row is allowed to look like. Leave out the second and a user can edit their own row into somebody else&#8217;s.</p>
+
+<h2>Three traps in vibe-coded apps</h2>
+<ul>
+  <li><strong>Views walk straight past your rules.</strong> &#8220;Views bypass RLS by default because they are usually created with the <code>postgres</code> user&#8230; A view over a protected table hands out every row its policies were meant to withhold.&#8221; On Postgres 15 and above the fix is to create the view <code>with (security_invoker = true)</code>.</li>
+  <li><strong>Do not build rules on data the user can edit.</strong> Anything in <code>raw_user_meta_data</code> can be changed by the signed-in user themselves, so a policy that trusts it is not a policy. Supabase: &#8220;<code>raw_app_meta_data</code> cannot be updated by the user, so it&#8217;s a good place to store authorization data.&#8221;</li>
+  <li><strong>A secret key ignores all of this.</strong> The secret or <code>service_role</code> key runs as a role that bypasses Row Level Security by design: &#8220;Never use a secret key in the browser or expose it to customers.&#8221; If one is in your front-end code, no amount of policy work helps. <a href="/guides/is-my-supabase-key-safe">How to tell your keys apart</a>.</li>
+</ul>
+
+<h2>How to check yours, in order</h2>
+<ol>
+  <li>Open your Supabase project and go to the Table Editor. List every table your app reads or writes.</li>
+  <li>For each one, in the SQL Editor, enable Row Level Security, revoke the grants and grant back only what that table needs, using the three lines above.</li>
+  <li>Write a policy for <code>select</code>, <code>insert</code>, <code>update</code> and <code>delete</code> on each table, naming the role in a <code>to</code> clause.</li>
+  <li>Check the views as well as the tables.</li>
+  <li>Prove it, rather than assuming it. Supabase&#8217;s own instruction is blunt: &#8220;Until the suite passes, you don&#8217;t know whether the policies do what you intended.&#8221; The documented way is a test file per table under <code>supabase/tests/</code>, run with <code>supabase test db</code>. If that is beyond you today, the next best thing is to sign out of your own app in a private window and try to reach data that is not yours.</li>
+</ol>
+
+<h2>The prompt to paste into your builder</h2>
+<p>Copy this as it is. It makes the builder show you the facts before it changes anything, which is the only way to keep an AI honest about a database.</p>
+<pre><code>Before changing anything, inspect my Supabase project and list for me, as a table:
+1. Every table in the public schema.
+2. Whether Row Level Security is enabled on each one.
+3. Every policy on each one, with the operation it covers and the role it applies to.
+4. Which grants anon and authenticated hold on each one.
+5. Every view, and whether it was created with security_invoker = true.
+Show me that list and wait for me to confirm it before you write any SQL.
+
+Then, for each table I confirm, in one migration:
+- enable row level security
+- revoke all grants from anon and authenticated
+- grant back only the operations I tell you that role needs
+- create a separate policy for select, insert, update and delete, each naming its
+  role with a "to" clause, and each update policy having both using and with check
+
+Rules: do not use "for all". Do not write a policy that reads raw_user_meta_data.
+Do not create a security definer function in an exposed schema. Where you are not
+sure what a table is for, write [CHECK] and ask me instead of guessing. List every
+[CHECK] at the end. Do not touch my app code in the same change.</code></pre>
+
+<h2>What we can and cannot tell you</h2>
+<p>Our <a href="/">free check</a> reads the JavaScript your live site serves and tells you which keys are in it, which is the half of this that is visible from outside. It cannot see your tables, your policies or your grants, and we are not going to pretend otherwise: nobody can tell you your database is locked without looking inside your project. When we checked 35 live Lovable apps on 18 November 2026, not one of them had leaked a secret key, and we still could not say whether a single one of those databases was safe.</p>
+<p>Every quotation on this page is from <a href="https://supabase.com/docs/guides/database/postgres/row-level-security" rel="noopener">Supabase docs: Row Level Security</a>, read on 20 November 2026. This page is information, not a security audit and not legal advice.</p>
+</div></main>
+<footer class="foot">
+  <div class="wrap">
+    <span>&#169; 2026 Unbork</span>
+    <nav aria-label="Guides and legal">
+      <a href="/guides/lovable-404-on-refresh">404 on refresh</a>
+      <a href="/guides/is-my-supabase-key-safe">Supabase keys</a>
+      <a href="/guides/what-is-row-level-security">Row Level Security</a>
+      <a href="/guides/does-my-app-need-a-cookie-banner">Cookie banners</a>
+      <a href="/guides/add-a-privacy-policy-to-a-lovable-app">Privacy policy</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

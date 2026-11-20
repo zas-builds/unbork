@@ -9,9 +9,9 @@ import { runScan } from '../lib/scan.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.png': 'image/png' };
-const ROUTES = { '/': 'index.html', '/privacy': 'privacy.html', '/terms': 'terms.html' };
+const ROUTES = { '/': 'index.html', '/privacy': 'privacy.html', '/terms': 'terms.html', '/pricing': 'pricing.html', '/refunds': 'refunds.html' };
 // Guides are served without the .html, the same as netlify.toml does.
-for (const slug of ['lovable-404-on-refresh', 'is-my-supabase-key-safe', 'does-my-app-need-a-cookie-banner']) {
+for (const slug of ['lovable-404-on-refresh', 'is-my-supabase-key-safe', 'does-my-app-need-a-cookie-banner', 'add-a-privacy-policy-to-a-lovable-app', 'what-is-row-level-security']) {
   ROUTES[`/guides/${slug}`] = `guides/${slug}.html`;
 }
 const port = Number(process.argv[2] || 8787);

@@ -244,3 +244,29 @@ section.block { padding: clamp(64px, 9vw, 112px) 0; }
 .doc ol { padding-left: 20px; }
 .doc ol li { margin: 8px 0; }
 .doc strong { color: var(--ink); }
+
+/* Comparison table on the pricing page */
+.cmp { width: 100%; border-collapse: collapse; margin: 24px 0 8px; font-size: 15px; }
+.cmp th, .cmp td { text-align: left; vertical-align: top; padding: 14px 16px 14px 0; border-top: 1px solid var(--line); }
+.cmp thead th { font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); font-weight: 600; border-top: none; }
+.cmp tbody th { font-weight: 600; color: var(--ink); width: 23%; }
+.cmp td:nth-child(2) { width: 24%; white-space: normal; }
+.cmp tbody tr:first-child th, .cmp tbody tr:first-child td { background: var(--surface); }
+@media (max-width: 680px) {
+  .cmp, .cmp tbody, .cmp tbody tr, .cmp tbody th, .cmp tbody td, .cmp td:nth-child(2) { display: block; width: auto; }
+  .cmp thead { display: none; }
+  .cmp tbody tr { border-top: 1px solid var(--line); padding: 12px 0; }
+  .cmp tbody th, .cmp tbody td { border-top: none; padding: 2px 0; }
+  .cmp tbody th { font-size: 17px; }
+  .cmp td:nth-child(2) { color: var(--ink); font-weight: 600; padding-bottom: 6px; }
+}
+
+/* The line under the verdict that says what a normal result looks like */
+.normal { margin: 14px 0 0; padding: 12px 16px; border-left: 2px solid var(--cobalt); background: var(--surface); color: #3c434d; font-size: 15px; max-width: 70ch; border-radius: 0 10px 10px 0; }
+.normal a { color: var(--cobalt-ink); }
+
+/* The plan cards also appear inside a .doc page, where .doc p and .doc li set
+   a dark grey that is unreadable on the dark card. */
+.doc .plan.full p, .doc .plan.full li, .doc .plan.full h3 { color: #e9ecf1; }
+.doc .plan.full .price small, .doc .plan.full .fine-print { color: #9aa3b0; }
+.doc .plans { margin-top: 32px; }

@@ -23,8 +23,8 @@ const ALLOWED = [
   'https://razorpay.com/docs/',
 ];
 
-test('there are four guides', () => {
-  assert.equal(FILES.length, 4);
+test('there are five guides', () => {
+  assert.equal(FILES.length, 5);
 });
 
 for (const file of FILES) {

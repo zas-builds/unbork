@@ -84,6 +84,25 @@
     return parts.length ? parts.join(', ').replace(/, ([^,]*)$/, ' and $1') + '.' : 'Nothing urgent, a few things worth knowing.';
   }
 
+  // What a normal result looks like, in our own measured numbers. Someone who
+  // cannot read code has no way to tell a clean report from a lazy one, and a
+  // green light with no context reads like a sales pitch that failed.
+  function normalResult(r) {
+    const broken = r.items.filter((i) => i.group !== 'legal' && i.level !== 'info');
+    const paperwork = r.items.filter((i) => i.group === 'legal' && i.level !== 'info');
+    const counts = () => h('a', { href: '/guides/add-a-privacy-policy-to-a-lovable-app', text: 'the counts are here' });
+    if (!broken.length && !paperwork.length) {
+      return h('p', { class: 'normal' },
+        'This is rarer than it sounds. Of 30 published Lovable apps we checked from outside on 18 November 2026, exactly one came back with nothing at all to fix (', counts(), ').');
+    }
+    if (!broken.length) {
+      return h('p', { class: 'normal' },
+        'Nothing about the site itself is broken, and that is the normal result rather than a let-down. Of 30 published Lovable apps we checked from outside on 18 November 2026, not one was broken, leaked a secret key or lost a page on refresh. What most of them were missing was the paperwork, which is what is left below (', counts(), ').');
+    }
+    return h('p', { class: 'normal' },
+      'For context on how unusual this is: of 30 published Lovable apps we checked from outside on 18 November 2026, none had a problem in the breakage checks. Yours has, so it is worth dealing with (', counts(), ').');
+  }
+
   function ghost() {
     const widths = ['82%', '64%', '91%', '48%'];
     return h('div', { class: 'locked' },
@@ -135,6 +154,7 @@
         h('div', {}, h('h2', { tabindex: '-1', id: 'report-title', text: headline(r) }),
           h('p', { class: 'meta' }, h('code', { text: r.finalUrl || r.url }), `, checked ${when.toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}`)),
         again),
+      normalResult(r),
       group('Fix now', site.filter((i) => i.level === 'red')),
       group('Fix soon', site.filter((i) => i.level === 'amber')),
       group('Legal and privacy', legal),
