@@ -37,8 +37,33 @@
     setTimeout(() => input.focus({ preventScroll: true }), 250);
   }));
 
-  // A link like /?url=myapp.lovable.app runs the check straight away.
-  const fromLink = new URLSearchParams(location.search).get('url');
+  // The address is kept in this browser tab only, so that coming back from
+  // the payment page can re-run the same check without us storing anything.
+  const REMEMBER = 'unbork:address';
+  const remember = (url) => { try { sessionStorage.setItem(REMEMBER, url); } catch { /* private mode */ } };
+  const remembered = () => { try { return sessionStorage.getItem(REMEMBER) || ''; } catch { return ''; } };
+
+  const PAID_NOTE = {
+    yes: 'Payment received. Here is your full report, with the fix steps and prompts. You can re-check this address free for the next seven days.',
+    late: 'Payment received. Your fixes take a few seconds to register. Run the check again and they will be there.',
+    no: 'The payment was not completed, so nothing has been charged.',
+    bad: 'We could not confirm that payment. If money has left your account, use the contact details on our refunds page and we will put it right.',
+    off: 'The full report is not on sale yet, so nothing has been charged.',
+  };
+
+  const params = new URLSearchParams(location.search);
+  const paid = params.get('paid');
+  if (paid && PAID_NOTE[paid]) {
+    const note = h('div', { class: `paid-note ${paid === 'yes' || paid === 'late' ? 'good' : 'plainly'}`, role: 'status' },
+      h('p', { text: PAID_NOTE[paid] }),
+      paid === 'bad' ? h('p', {}, h('a', { href: '/refunds', text: 'Refunds and contact' })) : null);
+    form.insertAdjacentElement('afterend', note);
+    history.replaceState(null, '', location.pathname);
+  }
+
+  // A link like /?url=myapp.lovable.app runs the check straight away. Coming
+  // back from a payment does the same thing with the address this tab kept.
+  const fromLink = params.get('url') || (paid === 'yes' || paid === 'late' ? remembered() : '');
   if (fromLink) { input.value = fromLink.slice(0, 2048); setTimeout(() => form.requestSubmit(), 50); }
 
   form.addEventListener('submit', async (e) => {
@@ -110,6 +135,34 @@
       h('div', { class: 'over' }, h('span', {}, lockIcon(), 'Fix steps and a paste-ready prompt, in the full report')));
   }
 
+  function copyButton(text) {
+    const btn = h('button', { class: 'btn ghost copy', type: 'button', text: 'Copy the prompt' });
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = 'Copied';
+      } catch {
+        btn.textContent = 'Press Ctrl and C to copy';
+      }
+      setTimeout(() => { btn.textContent = 'Copy the prompt'; }, 2600);
+    });
+    return btn;
+  }
+
+  // The paid half of a finding: what to do, in order, and the prompt to paste
+  // into the builder. Only ever drawn from a report the server unlocked, so
+  // there is never hidden text sitting behind a blur on this page.
+  function fix(f) {
+    const block = h('div', { class: 'fix' }, h('h5', { text: 'What to do' }));
+    if (Array.isArray(f.steps) && f.steps.length) block.append(h('ol', { class: 'fix-steps' }, f.steps.map((t) => h('li', { text: t }))));
+    if (typeof f.prompt === 'string' && f.prompt.trim()) {
+      block.append(h('h5', { text: 'Paste this into Lovable, Bolt or Cursor' }),
+        h('pre', { class: 'prompt' }, h('code', { text: f.prompt })),
+        copyButton(f.prompt));
+    }
+    return block;
+  }
+
   function finding(i) {
     const body = h('div', { class: 'body' },
       h('div', { class: 'head' }, h('span', { class: `dot ${DOT[i.level] || 'note'}`, 'aria-hidden': 'true' }), h('h4', { text: i.headline })),
@@ -124,6 +177,9 @@
         h('p', { class: 'applies', text: s.applies }),
         link && h('p', {}, link)));
     }
+    if (typeof i.guide === 'string' && /^\/guides\/[a-z0-9-]+$/.test(i.guide)) {
+      body.append(h('p', { class: 'guide-link' }, h('a', { href: i.guide, text: 'Read the guide to this one' })));
+    }
     const where = (i.where || []).filter(Boolean);
     const keys = i.keys || [];
     if (where.length || keys.length) {
@@ -131,13 +187,53 @@
         h('ul', { class: 'where' }, where.map((w) => h('li', { text: w })), keys.map((k) => h('li', { text: `Key starts ${k}` })))));
     }
     const card = h('article', { class: 'finding' }, body);
-    if (i.fixReady) card.append(ghost());
+    if (i.fix) card.append(fix(i.fix));
+    else if (i.fixReady) card.append(ghost());
     return card;
   }
 
   function group(title, items) {
     if (!items.length) return null;
     return h('div', { class: 'group' }, h('h3', {}, title, h('span', { class: 'n', text: `(${items.length})` })), items.map(finding));
+  }
+
+  // Three states: already paid for, on sale, or not on sale yet. The page
+  // never decides this for itself; it says what the server told it.
+  function unlockBlock(r) {
+    const full = r.full || {};
+    if (!full.fixes) return null;
+    if (full.unlocked) {
+      return h('div', { class: 'unlock paid' },
+        h('div', {}, h('h3', { text: 'Your full report is unlocked.' }),
+          h('p', { text: 'Every fix above is yours to keep. Re-check this address free for seven days from when you paid, to confirm each fix worked.' })));
+    }
+    const head = h('div', {}, h('h3', { text: `${plural(full.fixes, 'fix', 'fixes')} ready for this site.` }),
+      h('p', { text: full.onSale
+        ? 'The full report gives you the steps for each problem and a prompt to paste into Lovable, Bolt or Cursor. Paid once, not a subscription, and refundable for seven days.'
+        : 'The full report gives you the steps for each problem and a prompt to paste into Lovable, Bolt or Cursor. It is not on sale yet.' }));
+    if (!full.onSale) {
+      return h('div', { class: 'unlock' }, head, h('button', { class: 'btn', type: 'button', disabled: true, text: 'Launching soon' }));
+    }
+    const buy = h('button', { class: 'btn', type: 'button', text: full.price ? `Unlock for ${full.price}` : 'Unlock the full report' });
+    const sayError = (t) => { const e = h('p', { class: 'buy-error', text: t }); buy.insertAdjacentElement('afterend', e); };
+    buy.addEventListener('click', async () => {
+      const url = r.url || r.finalUrl;
+      buy.disabled = true; buy.textContent = 'Opening the payment page…';
+      remember(url);
+      try {
+        const res = await fetch('/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url }) });
+        const data = await res.json().catch(() => null);
+        if (data && data.ok && typeof data.payUrl === 'string' && data.payUrl.startsWith('https://')) {
+          location.assign(data.payUrl);
+          return;
+        }
+        sayError((data && data.error) || 'We could not start the payment. Nothing has been charged.');
+      } catch {
+        sayError('We could not reach the payment page. Nothing has been charged. Check your connection and try again.');
+      }
+      buy.disabled = false; buy.textContent = full.price ? `Unlock for ${full.price}` : 'Unlock the full report';
+    });
+    return h('div', { class: 'unlock' }, head, h('div', {}, buy, h('p', { class: 'fine', text: 'Pay once for this report. No account, no subscription.' })));
   }
 
   function render(r) {
@@ -161,10 +257,7 @@
       group('Worth adding', site.filter((i) => i.level === 'info')),
       r.safe && r.safe.length ? h('div', { class: 'group' }, h('h3', { text: 'What is fine' }), h('ul', { class: 'safe-list' }, r.safe.map((t) => h('li', { text: t })))) : null,
       r.notes && r.notes.length ? h('div', { class: 'group' }, h('h3', { text: 'What we could not check' }), h('ul', { class: 'note-list' }, r.notes.map((t) => h('li', { text: t })))) : null,
-      r.full && r.full.fixes ? h('div', { class: 'unlock' },
-        h('div', {}, h('h3', { text: `${plural(r.full.fixes, 'fix', 'fixes')} ready for this site.` }),
-          h('p', { text: 'The full report gives you the steps for each problem and a prompt to paste into Lovable, Bolt or Cursor. It is not on sale yet.' })),
-        h('button', { class: 'btn', type: 'button', disabled: true, text: 'Launching soon' })) : null,
+      unlockBlock(r),
       h('p', { class: 'disclaimer', text: 'Unbork reports what anyone can see from outside your site. It is not a security audit and not legal advice, and a clean report does not mean nothing is wrong behind a login or in your database.' })));
     out.hidden = false;
     out.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });

@@ -4,6 +4,8 @@
 
 import { runScan } from '../../lib/scan.mjs';
 import { recordScanQuietly } from '../../lib/counter.mjs';
+import { isUnlocked } from '../../lib/unlocks.mjs';
+import { paymentsConfig, paymentsReady, currencyFor, priceFor } from '../../lib/payments.mjs';
 
 // Netlify enforces this before the function runs, on every plan:
 // docs.netlify.com/manage/security/secure-access-to-sites/rate-limiting/
@@ -50,7 +52,7 @@ function summarise(report) {
   };
 }
 
-export default async function handler(request) {
+export default async function handler(request, context) {
   let target = null;
   let view = '';
   if (request.method === 'GET') {
@@ -73,8 +75,21 @@ export default async function handler(request) {
   if (!target) return json({ ok: false, error: 'Please paste your site address.' }, 400);
   if (target.length > 2048) return json({ ok: false, error: 'That is too long to be a web address.' }, 400);
 
+  // Has this address been paid for in the last seven days? The question is
+  // asked of a store of one-way hashes, so answering it does not require
+  // keeping anybody's address. Nothing is read at all while payments are off.
+  const settings = paymentsConfig(process.env);
+  const onSale = paymentsReady(settings);
+  const paid = onSale ? await isUnlocked(target, settings.pepper) : false;
+
   try {
-    const report = await runScan(target, { includeFixes: previewUnlocked(request) });
+    const report = await runScan(target, { includeFixes: paid || previewUnlocked(request) });
+    if (report.ok && report.full) {
+      report.full.onSale = onSale;
+      const country = context && context.geo && context.geo.country ? context.geo.country.code : '';
+      const price = onSale ? priceFor(currencyFor(country, settings)) : null;
+      report.full.price = price ? price.label : null;
+    }
     // One number per day, nothing about the site or the visitor. See
     // lib/counter.mjs. Summary scans are ours: nothing on the site asks for
     // that view, so counting them would only flatter us.

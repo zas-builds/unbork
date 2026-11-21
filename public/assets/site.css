@@ -209,6 +209,30 @@ section.block { padding: clamp(64px, 9vw, 112px) 0; }
 .unlock p { color: #9aa3b0; margin: 10px 0 0; max-width: 38em; }
 .unlock .btn[disabled] { background: #2c313a; border-color: #2c313a; color: #9aa3b0; }
 @media (max-width: 680px) { .unlock { grid-template-columns: 1fr; } }
+.unlock.paid { grid-template-columns: 1fr; }
+.unlock .fine { font-size: 13.5px; margin: 12px 0 0; }
+.unlock .buy-error { color: #ffb4ae; font-size: 14.5px; margin: 12px 0 0; }
+
+/* The paid half of a finding. Deliberately plain: these are instructions to
+   follow, not something to admire. */
+.finding .guide-link { margin: 12px 0 0; font-size: 15px; }
+.finding .guide-link a { color: var(--cobalt-ink); }
+
+.fix { border-top: 1px solid var(--line-soft); padding: 18px 22px 20px; background: var(--surface); }
+.fix h5 { margin: 0 0 8px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.fix h5 + * { margin-top: 0; }
+.fix .fix-steps { margin: 0 0 20px; padding-left: 22px; }
+.fix .fix-steps li { margin: 7px 0; color: #3c434d; font-size: 15.5px; }
+.fix .prompt { margin: 0 0 14px; padding: 14px 16px; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; }
+.fix .prompt code { font-family: var(--mono); font-size: 13px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; color: #2b313a; }
+.fix .copy { font-size: 14.5px; padding: 9px 16px; }
+
+/* Coming back from the payment page. */
+.paid-note { margin: 22px auto 0; max-width: 70ch; padding: 14px 18px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); font-size: 15.5px; }
+.paid-note.good { border-color: #a8dcc2; background: #f1fbf5; }
+.paid-note p { margin: 0; color: #3c434d; }
+.paid-note p + p { margin-top: 8px; }
+.paid-note a { color: var(--cobalt-ink); }
 .disclaimer { margin-top: 28px; font-size: 13.5px; color: var(--muted); max-width: 52em; }
 
 /* Legal pages */

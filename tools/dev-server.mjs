@@ -6,18 +6,43 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname, normalize } from 'node:path';
 import { runScan } from '../lib/scan.mjs';
+import checkout from '../netlify/functions/checkout.mjs';
+import unlock from '../netlify/functions/unlock.mjs';
+import webhook from '../netlify/functions/razorpay-webhook.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml', '.png': 'image/png' };
 const ROUTES = { '/': 'index.html', '/privacy': 'privacy.html', '/terms': 'terms.html', '/pricing': 'pricing.html', '/refunds': 'refunds.html' };
 // Guides are served without the .html, the same as netlify.toml does.
-for (const slug of ['lovable-404-on-refresh', 'is-my-supabase-key-safe', 'does-my-app-need-a-cookie-banner', 'add-a-privacy-policy-to-a-lovable-app', 'what-is-row-level-security']) {
+for (const slug of ['lovable-404-on-refresh', 'is-my-supabase-key-safe', 'does-my-app-need-a-cookie-banner', 'add-a-privacy-policy-to-a-lovable-app', 'what-is-row-level-security', 'what-are-security-headers']) {
   ROUTES[`/guides/${slug}`] = `guides/${slug}.html`;
 }
 const port = Number(process.argv[2] || 8787);
 
+// The payment endpoints are the real Netlify functions, so what happens here
+// is what happens in production. With no Razorpay settings in the environment
+// they answer "not on sale yet", which is the live site's behaviour today.
+const FUNCTIONS = { '/api/checkout': checkout, '/api/unlock': unlock, '/api/razorpay/webhook': webhook };
+
+async function runFunction(handler, req, res, origin) {
+  let body = null;
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    body = ''; for await (const c of req) body += c;
+  }
+  const out = await handler(new Request(origin + req.url, { method: req.method, headers: req.headers, body, redirect: 'manual' }), {});
+  const headers = {};
+  out.headers.forEach((v, k) => { headers[k] = v; });
+  res.writeHead(out.status, headers);
+  res.end(Buffer.from(await out.arrayBuffer()));
+}
+
 createServer(async (req, res) => {
-  const u = new URL(req.url, `http://127.0.0.1:${port}`);
+  const origin = `http://127.0.0.1:${port}`;
+  const u = new URL(req.url, origin);
+  if (FUNCTIONS[u.pathname]) {
+    await runFunction(FUNCTIONS[u.pathname], req, res, origin);
+    return;
+  }
   if (u.pathname === '/api/scan') {
     let target = u.searchParams.get('url');
     if (req.method === 'POST') {

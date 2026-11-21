@@ -20,9 +20,9 @@
 </header>
 <main class="doc" id="main"><div class="wrap">
 <h1>Privacy policy</h1>
-<p class="updated">Last updated 18 November 2026</p>
+<p class="updated">Last updated 21 November 2026</p>
 
-<p>The short version: Unbork has no accounts, sets no cookies, runs no analytics and does not keep the addresses you check or the reports it produces. The one thing we do keep is a count of how many checks were run each day, with nothing attached to it.</p>
+<p>The short version: Unbork has no accounts, sets no cookies, runs no analytics and does not keep the addresses you check or the reports it produces. The one thing we keep for a free check is a count of how many checks were run each day, with nothing attached to it. If you pay for a full report we keep one more record, for seven days, and it holds a one-way hash of the address rather than the address itself. Both are described below.</p>
 
 <h2>Who runs Unbork</h2>
 <p>Unbork is run by <span class="todo">[operator’s legal name and postal address, to be added]</span>. For anything about your data, write to <span class="todo">[contact email, to be added]</span>.</p>
@@ -42,10 +42,11 @@
 <p>Where the GDPR or UK GDPR applies, we rely on legitimate interests (Article 6(1)(f)): running the check you asked for, and keeping the service secure. We do not use your data for marketing, profiling or advertising, and we do not sell or share it.</p>
 
 <h2 id="cookies">Cookies and tracking</h2>
-<p>None. Unbork sets no cookies, uses no local storage, loads no analytics or advertising tools and loads no fonts or scripts from other companies. That is why there is no cookie banner.</p>
+<p>None. Unbork sets no cookies, loads no analytics or advertising tools and loads no fonts or scripts from other companies. That is why there is no cookie banner.</p>
+<p>One small exception, which is not tracking and not a cookie: if you start a payment, your browser remembers the address you were checking for the rest of that tab, so that coming back from the payment page can show you the right report. It is held in your own browser, it is never sent to us except as part of the check you ask for, and closing the tab removes it.</p>
 
 <h2>How long we keep data</h2>
-<p>Unbork keeps nothing about you or your site after a check finishes. The only thing kept is the daily count described above, for 90 days. Request data held by Netlify is kept according to Netlify’s own policy.</p>
+<p>Unbork keeps nothing about you or your site after a free check finishes. The only things kept are the daily count described above, for 90 days, and, if you pay for a full report, the three-part record described under paid reports, for seven days. Request data held by Netlify is kept according to Netlify’s own policy.</p>
 
 <h2>Your rights</h2>
 <p>Depending on where you live, you may have the right to ask what data we hold about you, to have it corrected or deleted, and to object to how it is used. Because the only thing Unbork stores is a count that is not about anyone, in most cases there will be nothing to give you, but write to <span class="todo">[contact email, to be added]</span> and we will answer. If you are in the EU or UK you can also complain to your data protection authority.</p>
@@ -53,8 +54,12 @@
 <h2>Children</h2>
 <p>Unbork is meant for people who build and run websites, and is not aimed at children.</p>
 
-<h2>When paid reports launch</h2>
-<p>Paid reports are not on sale yet. Before they are, this policy will be updated to name the payment provider and explain exactly what it receives. Nothing changes for free checks.</p>
+<h2 id="paid">If you pay for a full report</h2>
+<p>Paid reports are not on sale yet. What follows is how the payment part is already built, so that it is published before anybody can be charged rather than after.</p>
+<p><strong>Who takes the payment.</strong> Razorpay. When you choose to unlock a report we ask Razorpay to create a payment link and send you to Razorpay’s own page to pay. Your card or bank details go to Razorpay and never reach us: we never see them and we could not store them if we wanted to. Razorpay handles them under <a href="https://razorpay.com/privacy/" rel="noopener">its own privacy policy</a>. We do not ask Razorpay to email or text you anything.</p>
+<p><strong>What Razorpay is told.</strong> An amount, a currency, and one reference. The reference is the one-way hash described below, so Razorpay is not told which site you checked. We do not send it your name, email address or phone number, because we do not have them.</p>
+<p><strong>What we store, and for how long.</strong> One record per paid report, for seven days, holding exactly three things: a one-way hash of the address you checked, the payment reference Razorpay gives us, and the date the unlock runs out. There is no account, no email address, no name, no copy of your report and no record of what the report said. The hash is made with a secret that is held only in our server’s settings and is not stored alongside it, so the file on its own cannot be turned back into your address. We keep the record so that your report stays unlocked, and so that you can re-run the same check free for seven days to confirm each fix worked. Once it runs out it unlocks nothing, and it is deleted the next time anything asks about that address.</p>
+<p><strong>Refunds.</strong> If you ask for a refund we process it through Razorpay, which needs the payment reference above. The refund policy is at <a href="/refunds">/refunds</a>.</p>
 
 <h2>Changes</h2>
 <p>If this policy changes, the date at the top will change with it.</p>

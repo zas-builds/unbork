@@ -45,6 +45,11 @@
   status = 200
 
 [[redirects]]
+  from = "/guides/what-are-security-headers"
+  to = "/guides/what-are-security-headers.html"
+  status = 200
+
+[[redirects]]
   from = "/pricing"
   to = "/pricing.html"
   status = 200

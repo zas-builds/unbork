@@ -21,10 +21,13 @@ const ALLOWED = [
   'https://www.meity.gov.in/',
   'https://oag.ca.gov/',
   'https://razorpay.com/docs/',
+  // Added 21 Nov 2026 for the security headers guide, which has to say what
+  // Lovable's own documentation does and does not offer.
+  'https://docs.lovable.dev/',
 ];
 
-test('there are five guides', () => {
-  assert.equal(FILES.length, 5);
+test('there are six guides', () => {
+  assert.equal(FILES.length, 6);
 });
 
 for (const file of FILES) {
@@ -58,3 +61,13 @@ for (const file of FILES) {
     assert.doesNotMatch(html, /\[to be added\]|TODO|class="todo"|lorem/i);
   });
 }
+
+// A finding may point at a guide. If it does, that guide has to exist.
+test('every guide a finding points at is a page we actually publish', async () => {
+  const { CHECKS } = await import('../lib/scan.mjs');
+  const slugs = FILES.map((f) => `/guides/${f.replace(/\.html$/, '')}`);
+  const source = CHECKS.map((c) => c.run.toString()).join('\n');
+  const pointed = [...source.matchAll(/guide: '([^']+)'/g)].map((m) => m[1]);
+  assert.ok(pointed.length >= 1, 'no finding points at a guide');
+  for (const slug of pointed) assert.ok(slugs.includes(slug), `no such guide: ${slug}`);
+});

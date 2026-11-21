@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What are security headers, and is my app missing them? | Unbork</title>
+<meta name="description" content="Security headers are one-line instructions your host sends with every page. Of 30 published Lovable apps we checked, 29 were missing at least one. What the three worth having actually do, and whether you can set them where your app is published.">
+<link rel="canonical" href="https://idyllic-tapioca-a4846d.netlify.app/guides/what-are-security-headers">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What are security headers, and is my app missing them?">
+<meta property="og:description" content="One-line instructions your host sends with every page. 29 of 30 published Lovable apps we checked were missing at least one, and whether you can fix that depends entirely on where your app is published.">
+<meta property="og:image" content="https://idyllic-tapioca-a4846d.netlify.app/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#eceef1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are security headers, and is my app missing them?","acceptedAnswer":{"@type":"Answer","text":"Security headers are short instructions your host sends alongside every page, telling the browser to insist on a secure connection, to refuse to be loaded inside another website, and not to guess what kind of file it has been sent. Nothing breaks without them and your app works normally; they close off a few specific attacks. They come from whoever serves your pages rather than from your code, which is why almost every published app is missing at least one: of 30 published Lovable apps we checked from outside on 18 November 2026, 29 were missing one or more. If you deploy to Netlify yourself it is a four-line file. If your app is published on a lovable.app address, we could not find any way for you to set them."}}]},{"@type":"Article","headline":"What are security headers, and is my app missing them? | Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/guides/what-are-security-headers","datePublished":"2026-11-21","inLanguage":"en-GB","isPartOf":{"@type":"WebSite","name":"Unbork","url":"https://idyllic-tapioca-a4846d.netlify.app/"}}]}
+</script>
+</head>
+<body>
+<header class="top scrolled">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Unbork home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5.5A10.5 10.5 0 1 0 26.5 16" fill="none" stroke="#1a1d23" stroke-width="3.4" stroke-linecap="round"/><path d="M26.5 16A10.5 10.5 0 0 0 16 5.5" fill="none" stroke="#3047ff" stroke-width="3.4" stroke-linecap="round"/></svg>
+      unbork
+    </a>
+    <a class="btn" href="/">Check my site</a>
+  </div>
+</header>
+<main class="doc" id="main"><div class="wrap">
+<h1>What are security headers, and is my app missing them?</h1>
+<p class="updated">Written 21 November 2026. Every source below was opened and checked on the date given.</p>
+<p><strong>Short answer:</strong> they are short instructions your host sends alongside every page, telling the browser to insist on a secure connection, to refuse to be loaded inside somebody else&#8217;s website, and not to guess what kind of file it has been handed. Nothing breaks without them. They close off a few specific attacks, and that is all they do.</p>
+<p>If yours are missing you are in ordinary company rather than in trouble. Of 30 published Lovable apps we checked from outside on 18 November 2026, 29 were missing at least one. That is why our own report never turns red over a header: it lists them under &#8220;worth adding&#8221;, next to the things that actually need doing.</p>
+
+<h2>The three we look for, and what each one stops</h2>
+<p><strong>Strict-Transport-Security.</strong> Tells the browser to always use the secure version of your site in future. Without it, somebody&#8217;s very first visit can be sent over an unprotected connection before the redirect to https happens, and that first request is the one worth intercepting.</p>
+<p><strong>X-Frame-Options</strong> (or <code>frame-ancestors</code> in a content security policy). Stops another website loading your app inside its own page. Without it, someone can wrap your sign-in screen in a copy of your site and collect what people type into it.</p>
+<p><strong>X-Content-Type-Options: nosniff.</strong> Stops the browser guessing what kind of file it has been sent. Guessing wrongly is how a file that was meant to be an image ends up being run as code.</p>
+<p>None of these is urgent, and none of them fixes anything that is currently broken. If your report also lists something under &#8220;fix now&#8221;, do that first.</p>
+
+<h2>Why almost every app is missing them</h2>
+<p>Because headers are not part of your app. They are added by whatever serves your pages, after your code has finished running. Your builder can write perfect code and still produce a site with no headers at all, because the setting lives in a configuration file for your host, or in your host&#8217;s own defaults, and nobody told the builder to write one.</p>
+<p>This matters for a practical reason: whether you can do anything about it depends entirely on where your app is published, not on what your app does.</p>
+
+<h2>If your app is on your own Netlify deployment</h2>
+<p>This is the easy case. Netlify reads custom headers either from a file called <code>_headers</code> in your published folder, or from a <code>netlify.toml</code> file at the top of your project. In <code>netlify.toml</code> the shape Netlify documents is a <code>for</code> pattern and then the values:</p>
+<pre><code>[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"</code></pre>
+<p>Commit that, let it redeploy, and run the check again. If your app needs to be embeddable inside another site on purpose, use <code>SAMEORIGIN</code> in place of <code>DENY</code>, which is the value Netlify&#8217;s own example uses. The file names and the format are from <a href="https://docs.netlify.com/manage/routing/headers/" rel="noopener">Netlify docs: Custom headers</a>, read on 21 November 2026.</p>
+
+<h2>If your app is on your own Vercel deployment</h2>
+<p>Vercel takes the same idea through a <code>headers</code> setting in its project configuration file. We are not going to print a snippet here: we tried to read Vercel&#8217;s current reference for that field on 21 November 2026 and could not get the page to render for us, and a configuration file that is nearly right is worse than none. Open <a href="https://vercel.com/docs/project-configuration" rel="noopener">Vercel docs: Project configuration</a> and look for <code>headers</code>, or use the prompt below, which tells your builder to go and read that page itself rather than remembering.</p>
+
+<h2>If your app is on a lovable.app address</h2>
+<p>Then as far as we can tell there is nothing for you to do, and nothing you have done wrong. Lovable hosts those pages, so Lovable decides what headers they carry. We went looking through <a href="https://docs.lovable.dev/features/security" rel="noopener">Lovable&#8217;s own security documentation</a> on 21 November 2026 for a way to set response headers on a published app and did not find one. Our 30-app count is consistent with that: when 29 of 30 sites on one platform are missing the same setting, the likeliest explanation is the platform, not 29 careless builders.</p>
+<p>So if you are on Lovable&#8217;s hosting, treat this as a question for Lovable rather than a job for you. If you do find a way to set them there, tell us and we will correct this page.</p>
+
+<h2>The prompt, if you deploy the app yourself</h2>
+<p>Paste this into Lovable, Bolt or Cursor. It makes the builder read your host&#8217;s current documentation rather than writing a config from memory, which is the usual way these end up wrong.</p>
+<pre><code>My app is deployed to [Netlify / Vercel]. I want three response headers on every page:
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+
+Please:
+1. Tell me which configuration file my host reads for custom response headers, and check that against my host's current documentation rather than from memory. Quote the page you used.
+2. Add exactly those three headers for all paths, in that file, changing nothing else about my routing or build settings.
+3. If my app is meant to be embedded in another site, say so and use SAMEORIGIN instead of DENY, and explain why.
+4. List every file you changed, and tell me how to confirm the headers are live after I redeploy.</code></pre>
+
+<h2>How to tell whether it worked</h2>
+<p>Redeploy, then <a href="/">run the free check again</a>. The three headers move from &#8220;worth adding&#8221; into the list of things that are fine. Nothing else about your report should change, and if something else does change, it was not the headers that did it.</p>
+
+<h2>What we can and cannot tell you</h2>
+<p>Our check reads what your live site sends back to an ordinary visitor, so headers are one of the few things we can see completely and be certain about. What we cannot see is why they are missing, or whether your host will let you add them. This page is information, not a security audit and not legal advice.</p>
+</div></main>
+<footer class="foot">
+  <div class="wrap">
+    <span>&#169; 2026 Unbork</span>
+    <nav aria-label="Guides and legal">
+      <a href="/guides/lovable-404-on-refresh">404 on refresh</a>
+      <a href="/guides/is-my-supabase-key-safe">Supabase keys</a>
+      <a href="/guides/what-is-row-level-security">Row Level Security</a>
+      <a href="/guides/does-my-app-need-a-cookie-banner">Cookie banners</a>
+      <a href="/guides/add-a-privacy-policy-to-a-lovable-app">Privacy policy</a>
+      <a href="/guides/what-are-security-headers">Security headers</a>
+      <a href="/pricing">Pricing</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

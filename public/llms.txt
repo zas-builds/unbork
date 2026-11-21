@@ -12,5 +12,6 @@
 - [Does my app need a cookie banner?](https://idyllic-tapioca-a4846d.netlify.app/guides/does-my-app-need-a-cookie-banner): only for non-essential tracking, and consent has to come before it loads
 - [How do I add a privacy policy to my Lovable app?](https://idyllic-tapioca-a4846d.netlify.app/guides/add-a-privacy-policy-to-a-lovable-app): list what the app collects first, then write the page, then link it from the footer and every form
 - [What is Row Level Security, and is mine on?](https://idyllic-tapioca-a4846d.netlify.app/guides/what-is-row-level-security): the rules inside your database that decide which rows each visitor can reach, why the publishable key is only safe with them on, and how to check yours
+- [What are security headers, and is my app missing them?](https://idyllic-tapioca-a4846d.netlify.app/guides/what-are-security-headers): what the three we check actually stop, why 29 of 30 published Lovable apps miss one, and whether your host lets you set them
 
 Limits: Unbork checks from outside only. It does not log in, read source code or test database rules, and it is not legal advice.
